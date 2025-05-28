@@ -33,7 +33,17 @@ jobs:
         
       - name: install dependencies
         run: make requirements
+      
+      # commented out until there is some python to test
+      # - name: Test python files
+      #   run: make unit-test
 
-      - name: Test python files
-        run: make unit-test
 
+      - name: Black code style checks
+        run: make run-black
+
+      - name: check test coverage
+        run: make check-coverage
+      
+      - name: security checks
+        run: make security-test
