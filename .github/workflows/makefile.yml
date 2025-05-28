@@ -36,7 +36,6 @@ jobs:
       # - name: Test python files
       #   run: make unit-test
 
-
       - name: Black code style checks
         run: make run-black
 
