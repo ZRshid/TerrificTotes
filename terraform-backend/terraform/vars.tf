@@ -6,5 +6,5 @@ variable "aws_region" {
 variable "aws_s3_bucket" {
   description = "the backend bucket: TerrificTotes-tfstate"
   type        = string
-  default     = "terrifictotes-tfstate"
+  default     = "snacks-tt-tfstate"
 }
