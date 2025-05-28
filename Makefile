@@ -41,28 +41,10 @@ requirements: create-environment
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
 
 ################################################################################################################
-# # Set Up
-# ## Install bandit
-# bandit:
-# 	$(call execute_in_env, $(PIP) install bandit)
-
-# ## Install black
-# black:
-# 	$(call execute_in_env, $(PIP) install black)
-
-# ## Install coverage
-# coverage:
-# 	$(call execute_in_env, $(PIP) install pytest-cov)
-
-# ## Set up dev requirements (bandit, black & coverage)
-# dev-setup: bandit black coverage
-
-
 # Build / Run
-
 ## Run the security test (bandit + safety)
 security-test:
-	$(call execute_in_env, bandit -lll */*.py ./python/*c/*/*.py) # ADD LINES 
+	$(call execute_in_env, bandit -lll */*.py ./python/*c/*/*.py) 
 
 ## Run the black code check
 run-black:
