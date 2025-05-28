@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Test Pyton
+    name: Test Python
     runs-on: ubuntu-latest
 
     permissions:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
       
-      - run: echo "Begining tests"
+      - run: echo "Beginning tests"
       
       - name: Set up Python
         uses: actions/setup-python@v5
