@@ -35,5 +35,5 @@ jobs:
         run: make requirements
 
       - name: Test python files
-        run: pytest -vvvrP
+        run: make unit-test
 
