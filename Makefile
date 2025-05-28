@@ -35,7 +35,7 @@ endef
 
 ## Build the environment requirements
 requirements: create-environment
-	$(call execute_in_env, $(PIP) install pip-tools)
+	$(call execute_in_env, $(PIP) install pip-tools) # DELETE 
 
 	$(call execute_in_env, $(PIP) install -r ./requirements.dev.txt)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
@@ -61,11 +61,11 @@ dev-setup: bandit black coverage
 
 ## Run the security test (bandit + safety)
 security-test:
-	$(call execute_in_env, bandit -lll */*.py *c/*/*.py)
+	$(call execute_in_env, bandit -lll */*.py *c/*/*.py) # ADD LINES 
 
 ## Run the black code check
 run-black:
-	$(call execute_in_env, black  ./src/*.py ./tests/*.py)
+	$(call execute_in_env, black  ./src/*.py ./tests/*.py) # ADD LINES 
 
 ## Run the unit tests
 unit-test:
