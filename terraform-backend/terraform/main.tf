@@ -4,7 +4,7 @@ provider "aws" {
     tags = {
       Project = "Final_Project"
       Env     = "Dev"
-      Owner   = "Culinary"
+      Owner   = "Snacks"
       Backend = "Holds_tfstate"
     }
   }
