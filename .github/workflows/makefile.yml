@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
-    name: Test Pyton
+  test_python:
+    name: Test Python
     runs-on: ubuntu-latest
 
     permissions:
@@ -45,16 +45,30 @@ jobs:
       - name: security checks
         run: make security-test
 
-deploy:
-  runs-on: ubuntu-latest
-  needs: test
-  name: deploy terraform 
-  steps:
+
+  terraform_deploy:
+    runs-on: ubuntu-latest
+    needs: test_python
+    name: deploy terraform 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4   
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
           aws-access-key-id: ${{ secrets.AWSACCESSKEYID }}
           aws-secret-access-key: ${{ secrets.AWSSECRETACCESSKEY }}
           aws-region: ${{ secrets.AWSREGION }}
+      - name: Setup terraform 
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.1.7"
+      - name: Initialize Terraform
+        working-directory: terraform-backend/terraform
+        run: terraform init
+      - name: Plan Terraform
+        working-directory: terraform-backend/terraform
+        run: terraform plan
+      # - name: apply Terraform
+      #   working-directory: terraform-backend/terraform
+      #   run: terraform apply -auto-approve
