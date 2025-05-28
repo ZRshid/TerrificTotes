@@ -94,14 +94,15 @@ data "aws_iam_policy_document" "cw_document" {
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
+    # edit when more lambdas will be added 
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:aws/lambda/${var.lambda_name}:*"]
   }
 }
 
-# Create
+# Create 
 resource "aws_iam_policy" "cw_policy" {
   # use the policy document defined above
-  name = "${var.lambda_name}-cw-policy"
+  name = "lambda-cw-policy" 
   description = "Policy for CloudWatch Logs permissions for Lambda function"
   policy = data.aws_iam_policy_document.cw_document.json
 }
@@ -109,6 +110,7 @@ resource "aws_iam_policy" "cw_policy" {
 # Attach
 resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
   # attach the cw policy to the lambda role
+  # edit when more lambdas will be added 
   role = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.cw_policy.arn
 }
