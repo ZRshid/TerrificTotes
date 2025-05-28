@@ -7,21 +7,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  test:
+    name: Test Pyton
     runs-on: ubuntu-latest
 
+    
+
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - run: echo "Begining tests"
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: '3.12'
 
-    - name: configure
-      run: ./configure
+        # put python path into enviroment var:
+      - name: set python path
+        run: |
+          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
+        
+      - name: install dependencies
+        run: make requirements
 
-    - name: Install dependencies
-      run: make
+      - name: Test python files
+        run: pytest -vvvrP
 
-    - name: Run check
-      run: make check
-
-    - name: Run distcheck
-      run: make distcheck
