@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "tt_backend_bucket" {
   bucket = var.aws_s3_bucket
-  force_destroy = true
+  # force_destroy = true
 
   tags = {
     Name = "tt_backend_bucket"
