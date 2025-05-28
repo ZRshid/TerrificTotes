@@ -61,7 +61,7 @@ dev-setup: bandit black coverage
 
 ## Run the security test (bandit + safety)
 security-test:
-	$(call execute_in_env, bandit -lll */*.py *c/*/*.py) # ADD LINES 
+	$(call execute_in_env, bandit -lll */*.py ./python/*c/*/*.py) # ADD LINES 
 
 ## Run the black code check
 run-black:
@@ -71,8 +71,8 @@ unit-test:
 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -vv)
 
 ## Run the coverage check
-# check-coverage:
-# 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=python/src python/tests)
+check-coverage:
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=python/src python/tests)
 
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
