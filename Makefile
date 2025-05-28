@@ -35,7 +35,7 @@ endef
 
 ## Build the environment requirements
 requirements: create-environment
-	$(call execute_in_env, $(PIP) install pip-tools) # DELETE 
+	$(call execute_in_env, $(PIP) install --upgrade pip)
 
 	$(call execute_in_env, $(PIP) install -r ./requirements.dev.txt)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
@@ -65,8 +65,7 @@ security-test:
 
 ## Run the black code check
 run-black:
-	$(call execute_in_env, black  ./src/*.py ./tests/*.py) # ADD LINES 
-
+	$(call execute_in_env, black  ./python/*/*/*.py ) 
 ## Run the unit tests
 unit-test:
 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -vv)
