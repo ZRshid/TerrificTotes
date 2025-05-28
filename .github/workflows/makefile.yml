@@ -11,8 +11,6 @@ jobs:
     name: Test Pyton
     runs-on: ubuntu-latest
 
-    
-
     permissions:
       contents: read
     steps:
