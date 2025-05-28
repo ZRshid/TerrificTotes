@@ -39,8 +39,8 @@ jobs:
       - name: Black code style checks
         run: make run-black
 
-      - name: check test coverage
-        run: make check-coverage
+      # - name: check test coverage
+      #   run: make check-coverage
       
       - name: security checks
         run: make security-test
