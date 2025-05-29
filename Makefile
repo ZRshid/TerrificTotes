@@ -35,45 +35,27 @@ endef
 
 ## Build the environment requirements
 requirements: create-environment
-	$(call execute_in_env, $(PIP) install pip-tools) # DELETE 
+	$(call execute_in_env, $(PIP) install --upgrade pip)
 
 	$(call execute_in_env, $(PIP) install -r ./requirements.dev.txt)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
 
 ################################################################################################################
-# Set Up
-## Install bandit
-bandit:
-	$(call execute_in_env, $(PIP) install bandit)
-
-## Install black
-black:
-	$(call execute_in_env, $(PIP) install black)
-
-## Install coverage
-coverage:
-	$(call execute_in_env, $(PIP) install pytest-cov)
-
-## Set up dev requirements (bandit, black & coverage)
-dev-setup: bandit black coverage
-
 # Build / Run
-
 ## Run the security test (bandit + safety)
 security-test:
-	$(call execute_in_env, bandit -lll */*.py *c/*/*.py) # ADD LINES 
+	$(call execute_in_env, bandit -lll */*.py ./python/*c/*/*.py) 
 
 ## Run the black code check
 run-black:
-	$(call execute_in_env, black  ./src/*.py ./tests/*.py) # ADD LINES 
-
+	$(call execute_in_env, black  ./python/*/*/*.py ) 
 ## Run the unit tests
 unit-test:
 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest -vv)
 
 ## Run the coverage check
 check-coverage:
-	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=src tests/)
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=python/src python/tests)
 
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
