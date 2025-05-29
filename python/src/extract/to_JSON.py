@@ -19,6 +19,7 @@ def to_JSON(table_name:str, columns_data:list,rows:list[list],)->str:
     return json.dumps(table_dict, default=str)
 
 def name_rows(rows:list, column_names:list) -> list:
+    """Gives each value in each row a name"""
 
     named_rows = []
     for row in rows:
@@ -29,6 +30,9 @@ def name_rows(rows:list, column_names:list) -> list:
     return named_rows
 
 def extract_names_from_columns_data(columns_data:list) -> list:
+    """just extracts the name values into a list
+     (N.b no error checking etc)
+     """
     return [col['name'] for col in columns_data] #Are there any circumstances where name is not in the dictionary? PG8000's doc are terrible
     
     
