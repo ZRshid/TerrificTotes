@@ -1,4 +1,4 @@
-name: Test and Deploy ETL
+name: Makefile CI
 
 on:
   push:
