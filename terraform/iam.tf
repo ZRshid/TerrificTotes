@@ -44,6 +44,8 @@ data "aws_iam_policy_document" "s3_access" {
       # Bucket names globally unique
       "arn:aws:s3:::${var.backend_bucket}",
       "arn:aws:s3:::${var.raw_data_bucket}",
+      "arn:aws:s3:::${var.zip_bucket}"
+      
     ]
   }
   statement {
@@ -55,7 +57,8 @@ data "aws_iam_policy_document" "s3_access" {
     ]
     resources = [
       "arn:aws:s3:::${var.backend_bucket}/*",
-      "arn:aws:s3:::${var.raw_data_bucket}/*"
+      "arn:aws:s3:::${var.raw_data_bucket}/*",
+      "arn:aws:s3:::${var.zip_bucket}/*"
     ]
   }
 }
