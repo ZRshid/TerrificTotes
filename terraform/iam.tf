@@ -73,6 +73,41 @@ resource "aws_iam_role_policy_attachment" "lambda_access_policy_attachment" {
     policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 
+# ------------------------------
+# Resource AWS Secrets Manager 
+# ------------------------------
+#Get the manager resource 
+data "aws_secretsmanager_secret" "aws_secret" {
+  name = "totesys_secret" # secret name
+}
+ 
+# ------------------------------
+# Lambda IAM Policy for Secrets Manager 
+# ------------------------------
+
+# Define
+resource "aws_iam_policy" "lambda_secret_access" {
+  name = "LambdaSecretAccessPolicy"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ],
+        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
+      } 
+    ]
+  })
+}
+
+# We are using the generic lambda role here, please substitute with the correct one. 
+# Attach 
+resource "aws_iam_role_policy_attachment" "attach_lambda_secret_policy" {
+  role       = aws_iam_role.lambda_role.name  
+  policy_arn = aws_iam_policy.lambda_secret_access.arn
+}
 
 # ------------------------------
 # Lambda IAM Policy for CloudWatch
