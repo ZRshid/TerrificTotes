@@ -21,3 +21,9 @@ variable "zip_bucket" {
   type        = string
   default     = "tt-zip-bucket"
 }
+
+variable "extract_zip" {
+  description = "the zip file of extract handler lambda"
+  type        = string
+  default     = "extract_handler.zip"
+}
