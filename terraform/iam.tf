@@ -96,7 +96,7 @@ resource "aws_iam_policy" "lambda_secret_access" {
         Action = [
           "secretsmanager:GetSecretValue"
         ],
-        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
+        Resource = data.aws_secretsmanager_secret.aws_secret.arn
       } 
     ]
   })
