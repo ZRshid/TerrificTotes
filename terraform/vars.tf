@@ -13,5 +13,17 @@ variable "backend_bucket" {
 variable "lambda_name" {
   description = "lambda handler name"
   type        = string
-  default     = "lambda_template"
+  default     = "extract_data_from_table"
+}
+
+variable "zip_bucket" {
+  description = "bucket storage for zip files"
+  type        = string
+  default     = "tt-zip-bucket"
+}
+
+variable "extract_zip" {
+  description = "the zip file of extract handler lambda"
+  type        = string
+  default     = "extract_handler.zip"
 }
