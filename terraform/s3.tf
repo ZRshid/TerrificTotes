@@ -24,10 +24,11 @@ resource "aws_s3_bucket" "zip_bucket" {
     Environment = "Dev"
   }
 }
+
 resource "aws_s3_bucket_versioning" "tt_zip_bucket_versioning" {
   # Enable versioning for the TT Terraform state bucket
   bucket = aws_s3_bucket.zip_bucket.id
   versioning_configuration {
-    status = "Enabled"
+    status = "Disabled"
   }
 }
