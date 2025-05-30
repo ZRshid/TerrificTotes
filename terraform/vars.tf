@@ -13,7 +13,7 @@ variable "backend_bucket" {
 variable "lambda_name" {
   description = "lambda handler name"
   type        = string
-  default     = "lambda_template"
+  default     = "extract_data_from_table"
 }
 
 variable "zip_bucket" {
