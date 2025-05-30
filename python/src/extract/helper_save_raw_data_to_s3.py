@@ -23,4 +23,5 @@ def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str):
             ContentType='application/json'
         )
     except Exception as e:
+        logging.error(f"Error uploading to S3: {e}")
         raise Exception(f"Error uploading to S3: {e}")
