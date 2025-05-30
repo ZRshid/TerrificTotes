@@ -15,3 +15,9 @@ variable "lambda_name" {
   type        = string
   default     = "lambda_template"
 }
+
+variable "zip_bucket" {
+  description = "bucket storage for zip files"
+  type        = string
+  default     = "tt-zip-bucket"
+}
