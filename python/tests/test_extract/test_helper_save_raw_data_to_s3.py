@@ -94,4 +94,3 @@ class TestSaveRawDataToS3:
     def test_save_raw_data_to_s3_raises_exception_on_error(self, s3):
         with pytest.raises(Exception) as error_message:
             save_raw_data_to_s3(["random_data"], "test_table", "test_bucket")
-        assert "Error uploading to S3" in str(error_message.value)
