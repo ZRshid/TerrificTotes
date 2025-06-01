@@ -8,7 +8,9 @@
 # Lambda IAM Role
 # ---------------
 
-# Define
+
+# Defines a trust policy that allows AWS Lambda to assume this role.
+
 data "aws_iam_policy_document" "trust_policy" {
   statement {
     effect = "Allow"
@@ -20,7 +22,7 @@ data "aws_iam_policy_document" "trust_policy" {
   }
 }
 
-# Created for each lambda
+# Creates an IAM role for the Lambda function using the trust policy defined above.
 resource "aws_iam_role" "lambda_role" {
   name               = var.lambda_name
   assume_role_policy = data.aws_iam_policy_document.trust_policy.json
@@ -28,10 +30,12 @@ resource "aws_iam_role" "lambda_role" {
 
 
 # ------------------------------
-# Lambda IAM Policy for S3 Write
+# Lambda IAM Policy for S3 Read/Write
 # ------------------------------
 
-# Define
+# Defines a policy that allows the Lambda function to interact with specified S3 buckets.
+# Includes permission to list the buckets and read/write objects. Delete is also included but commented it out for the moment. 
+
 data "aws_iam_policy_document" "s3_access" {
   # IAM policy document for S3 access
   version = "2012-10-17"
@@ -63,14 +67,14 @@ data "aws_iam_policy_document" "s3_access" {
   }
 }
 
-# Create
+# Creates the actual IAM policy using the above document.
 # Generic policy for lambdas
 resource "aws_iam_policy" "s3_access_policy" {
   name   = "s3-access-policy-lambda"
   policy = data.aws_iam_policy_document.s3_access.json
 }
 
-# Attach below to each lambda
+# Attaches the S3 access policy to the Lambda's IAM role.
 resource "aws_iam_role_policy_attachment" "lambda_access_policy_attachment" {
     role = aws_iam_role.lambda_role.name # lambda_role to be changed for each lambda
     policy_arn = aws_iam_policy.s3_access_policy.arn
@@ -79,7 +83,8 @@ resource "aws_iam_role_policy_attachment" "lambda_access_policy_attachment" {
 # ------------------------------
 # Resource AWS Secrets Manager 
 # ------------------------------
-#Get the manager resource 
+
+# Retrieves the existing secret in AWS Secrets Manager used by the Lambda.
 data "aws_secretsmanager_secret" "aws_secret" {
   name = "totesys_secret" # secret name
 }
@@ -88,7 +93,8 @@ data "aws_secretsmanager_secret" "aws_secret" {
 # Lambda IAM Policy for Secrets Manager 
 # ------------------------------
 
-# Define - Allow read access to a particular secret.
+
+# Defines a policy that allows the Lambda to retrieve the secret value.
 resource "aws_iam_policy" "lambda_secret_access" {
   name = "LambdaSecretAccessPolicy"
   policy = jsonencode({
@@ -99,15 +105,16 @@ resource "aws_iam_policy" "lambda_secret_access" {
         Action = [
           "secretsmanager:GetSecretValue"
         ],
-#         Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
+# remove when tested        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
         Resource = data.aws_secretsmanager_secret.aws_secret.arn
       } 
     ]
   })
 }
 
+# Attaches the Secrets Manager policy to the Lambda's IAM role.
 # We are using the generic lambda role here, please substitute with the correct one. 
-# Attach 
+
 resource "aws_iam_role_policy_attachment" "attach_lambda_secret_policy" {
   role       = aws_iam_role.lambda_role.name  
   policy_arn = aws_iam_policy.lambda_secret_access.arn
@@ -117,7 +124,7 @@ resource "aws_iam_role_policy_attachment" "attach_lambda_secret_policy" {
 # Lambda IAM Policy for CloudWatch
 # ------------------------------
 
-# Define
+# Defines a policy document allowing the Lambda to create and write to CloudWatch Logs.
 data "aws_iam_policy_document" "cw_document" {
   statement {
     # this statement should give permission to create Log Groups in your account
@@ -138,7 +145,7 @@ data "aws_iam_policy_document" "cw_document" {
   }
 }
 
-# Create 
+# Creates a CloudWatch IAM policy from the above document. 
 resource "aws_iam_policy" "cw_policy" {
   # use the policy document defined above
   name = "lambda-cw-policy" 
@@ -146,10 +153,11 @@ resource "aws_iam_policy" "cw_policy" {
   policy = data.aws_iam_policy_document.cw_document.json
 }
 
-# Attach
+# Attaches the CloudWatch logging policy to the Lambda's IAM role.
 resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
   # attach the cw policy to the lambda role
   # edit when more lambdas will be added 
   role = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.cw_policy.arn
 }
+
