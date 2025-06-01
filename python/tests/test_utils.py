@@ -1,10 +1,11 @@
-from python.utils.utils import get_secret
+from python.utils.utils import get_secret, datetime_to_str
 import os  
 import boto3
 from botocore.exceptions import ClientError
 from moto import mock_aws 
 import pytest 
 import json 
+from datetime import datetime
 
 @pytest.fixture()
 def aws_credentials():
@@ -45,3 +46,18 @@ class TestGetSecret:
         missing_secret_name = "nonexistent_secret"
         with pytest.raises(ClientError):
             get_secret(missing_secret_name)
+
+class TestDatetime_to_str():
+    def test_is_str(self):
+        dt = datetime(2025,4,3,2,1,0,123456)
+        # expected_dt_str = "2025-04-03 02:01:00.123"
+        assert isinstance(datetime_to_str(dt), str)
+    def test_returns_correctly_formated_str(self):
+        dt = datetime(2025,4,3,2,1,0,123456)
+        expected_dt_str = "2025-04-03 02:01:00.123"
+        assert datetime_to_str(dt) == expected_dt_str
+    def test_returns_correctly_formated_str_when_0_ns(self):
+        dt = datetime(2025,4,3,2,1,0,0)
+        expected_dt_str = "2025-04-03 02:01:00.000"
+        assert datetime_to_str(dt) == expected_dt_str    
+    
