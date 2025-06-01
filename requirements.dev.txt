@@ -3,3 +3,4 @@ pytest-testdox
 bandit
 black
 pytest-cov
+moto
