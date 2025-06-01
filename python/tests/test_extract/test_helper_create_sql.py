@@ -27,6 +27,7 @@ class TestCreate_sql:
 
     def test_protect_table_name_from_injection(self, from_time, to_time):
         table = "test;"
+        table = 'test;'
         start = f'SELECT * FROM "{table}"'
         returned = create_sql(table, from_time, to_time)
         assert returned.startswith(start)

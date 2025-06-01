@@ -21,7 +21,7 @@ def create_sql(table: str, from_time: datetime, to_time: datetime) -> str:
 
 
 def add_where_clause(from_time: datetime, to_time: datetime) -> str:
-    """creates the where clause"""
+    """Creates the where clause."""
     str_from_time = from_time.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     str_to_time = to_time.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     print(literal(from_time), str_to_time)
