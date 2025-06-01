@@ -93,6 +93,7 @@ data "aws_secretsmanager_secret" "aws_secret" {
 # Lambda IAM Policy for Secrets Manager 
 # ------------------------------
 
+
 # Defines a policy that allows the Lambda to retrieve the secret value.
 resource "aws_iam_policy" "lambda_secret_access" {
   name = "LambdaSecretAccessPolicy"
@@ -104,6 +105,7 @@ resource "aws_iam_policy" "lambda_secret_access" {
         Action = [
           "secretsmanager:GetSecretValue"
         ],
+# remove when tested        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
         Resource = data.aws_secretsmanager_secret.aws_secret.arn
       } 
     ]
