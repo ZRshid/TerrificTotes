@@ -45,6 +45,4 @@ venv/
 *.pyc
 .env
 *.env
-
-
-
+.coverage
