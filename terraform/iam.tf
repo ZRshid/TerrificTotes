@@ -44,6 +44,8 @@ data "aws_iam_policy_document" "s3_access" {
       # Bucket names globally unique
       "arn:aws:s3:::${var.backend_bucket}",
       "arn:aws:s3:::${var.raw_data_bucket}",
+      "arn:aws:s3:::${var.zip_bucket}"
+      
     ]
   }
   statement {
@@ -55,7 +57,8 @@ data "aws_iam_policy_document" "s3_access" {
     ]
     resources = [
       "arn:aws:s3:::${var.backend_bucket}/*",
-      "arn:aws:s3:::${var.raw_data_bucket}/*"
+      "arn:aws:s3:::${var.raw_data_bucket}/*",
+      "arn:aws:s3:::${var.zip_bucket}/*"
     ]
   }
 }
@@ -85,7 +88,7 @@ data "aws_secretsmanager_secret" "aws_secret" {
 # Lambda IAM Policy for Secrets Manager 
 # ------------------------------
 
-# Define
+# Define - Allow read access to a particular secret.
 resource "aws_iam_policy" "lambda_secret_access" {
   name = "LambdaSecretAccessPolicy"
   policy = jsonencode({
@@ -96,7 +99,8 @@ resource "aws_iam_policy" "lambda_secret_access" {
         Action = [
           "secretsmanager:GetSecretValue"
         ],
-        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
+#         Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
+        Resource = data.aws_secretsmanager_secret.aws_secret.arn
       } 
     ]
   })
@@ -130,7 +134,7 @@ data "aws_iam_policy_document" "cw_document" {
       "logs:PutLogEvents"
     ]
     # edit when more lambdas will be added 
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:aws/lambda/${var.lambda_name}:*"]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"]
   }
 }
 
