@@ -27,7 +27,7 @@ def bucket(s3):
         CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'}
     )
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def raw_data():
     data =  [{"id": 1, "name": "Alice", "email": "alice@example.com", "active": True},
             {"id": 2, "name": "Bob", "email": "bob@example.com", "active": False}]
@@ -48,6 +48,7 @@ class TestSaveRawDataToS3:
         )
         # regex pattern for matching timestamp format: 2025-05-29_23:14
         pattern = r"20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])_([01]\d|2[0-3]):([0-5]\d|60)"
+        
         folders = [re.fullmatch(pattern, item["Key"].split("/")[0]) for item in response["Contents"]]
         assert all(folders)
 
@@ -66,6 +67,7 @@ class TestSaveRawDataToS3:
         )
         # regex pattern for matching timestamp format: 2025-05-29_23:14:02
         pattern = r"20\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])_([01]\d|2[0-3]):([0-5]\d|60):([0-5]\d|60)"
+        
         files = [re.search(pattern, item["Key"].split("/")[-1]) for item in response["Contents"]]
         assert all(files)
     

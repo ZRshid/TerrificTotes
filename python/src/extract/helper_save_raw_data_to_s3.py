@@ -1,5 +1,6 @@
 import boto3
 import logging
+
 from datetime import datetime, timezone
 
 def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str):

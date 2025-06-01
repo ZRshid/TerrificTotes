@@ -36,8 +36,15 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+#Zip files for lambda handlers
+terraform/zips/
+
 #non terraform stuff
 *__pycache__
 venv/
 *.pyc
 .env
+*.env
+
+
+
