@@ -3,7 +3,7 @@ from botocore.exceptions import ClientError
 import json
 import logging 
 
-def get_secret(secrets_name):
+def get_secret(secrets_name:str):
     """
     Get a secret from AWS Secrets Manager.
     Args:
@@ -16,8 +16,8 @@ def get_secret(secrets_name):
     try:
         response=secrets_manager.get_secret_value(SecretId=secrets_name)
         secret_dict = json.loads(response['SecretString'])
-        logging.info("Secrets retrieved")
+        logging.info(f"Secret: {secrets_name} retrieved")
         return secret_dict
     except ClientError as e:
-        logging.error(f"The following error has occurred {e}") # logging error - does it go to Cloudwatch and trigger error?
+        logging.error(f"The following error has occurred: {e}") # logging error - does it go to Cloudwatch and trigger error?
         raise e
