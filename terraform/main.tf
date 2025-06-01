@@ -1,5 +1,6 @@
 terraform {
   required_providers {
+     # Specifies the required AWS provider and its version.
     aws = {
       source = "hashicorp/aws"
       version = "~> 5.0"
@@ -13,7 +14,7 @@ terraform {
   }
 }
 
-# Configure the AWS provider 
+# Configure the AWS provider to operate in the "eu-west-2" (London) region.
 provider "aws" {
   region = "eu-west-2"
 }
