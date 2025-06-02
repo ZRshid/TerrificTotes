@@ -2,9 +2,9 @@ import json
 from datetime import datetime
 from python.utils.utils import datetime_to_str
 
-def to_JSON(table_name:str, columns_data:list,rows:list[list], from_time: datetime|None = None, to_time: datetime|None = None)->str:
+def to_JSON(table_name:str, columns_data:list, rows:list[list], from_time: datetime|None = None, to_time: datetime|None = None) -> str:
     """Converts the response from the database request into some json with the form:\n
-    {"table_name":[{"col0":value,col...:value,coln-1:value},{{"col0":value,...,coln-1:value},...}]}
+    {"table_name":[{"col0":value,"col1"...:value,"coln-1":value},{"col0":value,...,"coln-1":value},...,{"col0":value,...,"coln-1":value}]}
     
     If to_time of from_time are not none then they will be keys in the json with
     their dt converted as their value.
@@ -20,9 +20,10 @@ def to_JSON(table_name:str, columns_data:list,rows:list[list], from_time: dateti
     """ 
     column_names = extract_names_from_columns_data(columns_data)
     named_rows = name_rows(rows, column_names)
-    table_dict = {table_name:named_rows}
 
+    table_dict = {}
     add_time_keys(from_time, to_time, table_dict)
+    table_dict["table_name"] = named_rows
 
     return json.dumps(table_dict, default=str)
 
