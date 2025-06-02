@@ -15,16 +15,16 @@ resource "aws_cloudwatch_metric_alarm" "lambda_error_alarm" {
   dimensions = {
     FunctionName = aws_lambda_function.extract_handler.function_name
   }
-
-#   alarm_actions = [aws_sns_topic.lambda_alerts.arn] allow for email
+  
+  alarm_actions = [ aws_sns_topic.lambda_alerts.arn ]
 }
 
-# resource "aws_sns_topic" "lambda_alerts" {
-#   name = "lambda-error-alerts"
-# }
+resource "aws_sns_topic" "lambda_alerts" {
+  name = "lambda-error-alerts"
+}
 
-# resource "aws_sns_topic_subscription" "email_alert" {
-#   topic_arn = aws_sns_topic.lambda_alerts.arn
-#   protocol  = "email"
-#   endpoint  =  "ncproject_phase@gmail.com"
-# }
+resource "aws_sns_topic_subscription" "email_alert" {
+  topic_arn = aws_sns_topic.lambda_alerts.arn
+  protocol  = "email"
+  endpoint  =  "ncproject.phase@gmail.com"
+}
