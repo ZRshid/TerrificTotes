@@ -3,7 +3,8 @@ import logging
 
 from datetime import datetime, timezone
 
-def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str):
+
+def save_raw_data_to_s3(raw_data: str, table_name: str, bucket_name: str):
     """
     Saves raw data to an S3 bucket with a timestamped folder structure.
     Args:
@@ -18,16 +19,16 @@ def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str):
     if not isinstance(raw_data, str):
         logging.error("Raw_data must be a JSON-formatted string")
         raise TypeError("Raw_data must be a JSON-formatted string")
-    
+
     utc_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H:%M:%S")
-    s3 = boto3.client("s3", region_name='eu-west-2')
+    s3 = boto3.client("s3", region_name="eu-west-2")
     try:
         key = f"{utc_timestamp[:-3]}/{table_name}:{utc_timestamp}.json"
         s3.put_object(
-            Bucket = bucket_name,
-            Body = raw_data, # json string
-            Key = key,
-            ContentType='application/json'
+            Bucket=bucket_name,
+            Body=raw_data,  # json string
+            Key=key,
+            ContentType="application/json",
         )
         logging.info(f"{key} uploaded to S3")
     except Exception as e:
