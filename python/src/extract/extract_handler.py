@@ -18,9 +18,9 @@ def lambda_handler(event:dict, context:dict) -> dict:
 
     Args:
         event (dict): A dictionary with the folloing keys:
-          tables: A list of table names, 
-          start_time : A formated time string compatible with postgresql.
-          end_time A formated time string compatible with postgresql.
+            tables: A list of table names, 
+            start_time : A formated time string compatible with postgresql.
+            end_time A formated time string compatible with postgresql.
         context (dict): aws context
 
     Returns:
@@ -43,7 +43,7 @@ def lambda_handler(event:dict, context:dict) -> dict:
             # pass this SQL to query_db 
             conn = connect_to_db()
             rows,columns = query_db(query, conn) 
-            # close_db(conn)
+            close_db(conn)
 
             # pass the tuple to json 
             table_json = to_JSON(table,columns,rows ,from_time, to_time)
@@ -66,7 +66,6 @@ def lambda_handler(event:dict, context:dict) -> dict:
 if __name__ == "__main__":
     event =  '''{"tables" : ["sales_order", "purchase_order", "payment"],
                 "from_time" : "2025-06-01 11:30:55.00",
-                 "to_time" : "2025-06-02 11:31:55.00", "raw_data_bucket" : "tt-raw-data"
-                 }'''
+                "to_time" : "2025-06-02 11:31:55.00", "raw_data_bucket" : "tt-raw-data"
+                }'''
     lambda_handler(event, {})
-
