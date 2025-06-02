@@ -1,5 +1,5 @@
 from python.src.extract.helper_create_sql import create_sql
-from python.src.extract.connection import close_db, query_db
+from python.src.extract.connection import close_db, query_db, connect_to_db
 from datetime import datetime
 import pytest
 from unittest import mock
