@@ -12,37 +12,56 @@ from datetime import datetime
 #otherwise its default is none which doesnt log it
 logging.getLogger().setLevel(logging.INFO)
 
-def lambda_handler(event, context):
+def lambda_handler(event:dict, context:dict) -> dict:
+    """ A handler function to extract data from tables specified in the event,
+    for the time period in the event.
+
+    Args:
+        event (dict): A dictionary with the folloing keys:
+          tables: A list of table names, 
+          start_time : A formated time string compatible with postgresql.
+          end_time A formated time string compatible with postgresql.
+        context (dict): aws context
+
+    Returns:
+        dict: A dictionary with the key tables, a list of extracted tables.
+    """    
     # convert json to dict 
     event_dict = json.loads(event)
-    pprint(event_dict)
 
-    # take the table from the event list 
-    table = event_dict['tables'][0]
     from_time = event_dict['from_time']
     to_time = event_dict['to_time'] 
     raw_data_bucket = event_dict['raw_data_bucket']
 
-    # pass the table name and times to create SQL
-    query = create_sql(table, from_time, to_time)
+    # take the table from the event list 
+    tables = []
+    try:
+        for table in event_dict['tables']:
+            # pass the table name and times to create SQL
+            query = create_sql(table, from_time, to_time)
 
-    # pass this SQL to query_db 
-    conn = connect_to_db()
-    rows,columns = query_db(query, conn) 
-    close_db()
+            # pass this SQL to query_db 
+            conn = connect_to_db()
+            rows,columns = query_db(query, conn) 
+            close_db()
 
-    # pass the tuple to json 
+            # pass the tuple to json 
+            table_json = to_JSON(table,columns,rows ,from_time, to_time)
 
-    table_json = to_JSON(table,rows,columns ,from_time, to_time)
+            # pass the json to save raw_data
+            save_raw_data_to_s3(raw_data= table_json, table_name = table, bucket_name = raw_data_bucket)
 
-    # pass the json to save raw_data
-    #save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str): 
-
-    save_raw_data_to_s3(raw_data= table_json, table_name = table, bucket_name = raw_data_bucket)
-
+            tables.append(table)
+    except Exception as e:
+        message = f"Extraction Failed: On table {table}, previously extracted: {tables}. {e}"
+        logging.critical(message)
+        raise e
+    #assume if it gets this far it worked
+    message = f"Extract Succeeded for {len(tables)} tables at {to_time} "
+    logging.info(message)
+    
     # return list of tables  
-
-    return {"tables": ["sales"]} 
+    return {"tables": tables} 
 
 
 

@@ -28,6 +28,12 @@ def event():
                 "from_time" : "2025-06-02 11:30:55.00",
                  "to_time" : "2025-06-02 11:31:55.00", "raw_data_bucket" : "tt-raw-data"
                  }'''
+@pytest.fixture()
+def event_tables():
+    return '''{"tables" : ["table_name","sales"],
+                "from_time" : "2025-06-02 11:30:55.00",
+                 "to_time" : "2025-06-02 11:31:55.00", "raw_data_bucket" : "tt-raw-data"
+                 }'''
 
 @pytest.fixture()
 def row():
@@ -45,42 +51,55 @@ def columns():
 #         client = boto3.client('')
 #         yield client
 
+@patch('python.src.extract.extract_handler.save_raw_data_to_s3')
+@patch('python.src.extract.extract_handler.close_db')
+@patch('python.src.extract.extract_handler.connect_to_db')
+@patch('python.src.extract.extract_handler.query_db')
 class TestLambdaHandler():
 
-    # def test_lambda_handler_returns_dict(self, event, moc):
 
-    #     result = lambda_handler(event, {}) 
+    def test_lambda_handler_returns_dict(self, query_db_mm,b,c,d, event,row,columns):
+        query_db_mm.return_value = ([row], columns)
+        result = lambda_handler(event, {}) 
 
-    #     assert isinstance(result, dict)
-    #     #assert isinstance(result[]) 
+        assert isinstance(result, dict)
+        #assert isinstance(result[]) 
 
-    # def test_lambda_handler_returned_dict_keys_matching(self,event):
+    def test_lambda_handler_returned_dict_keys_matching(self, query_db_mm,b,c,d, event,row,columns):
+        query_db_mm.return_value = ([row], columns)
 
-    #     expected_keys = "tables"
+        expected_keys = "tables"
 
-    #     result = lambda_handler(event, {}) 
+        result = lambda_handler(event, {}) 
 
-    #     assert expected_keys in result 
+        assert expected_keys in result 
 
-    # def test_lambda_handler_returns_dict_lists(self, event):
 
-    #     result = lambda_handler(event, {}) 
+    def test_lambda_handler_returns_dict_lists(self, query_db_mm,b,c,d, event,row,columns):
+        query_db_mm.return_value = ([row], columns)
 
-    #     assert isinstance(result["tables"], list)
+        result = lambda_handler(event, {}) 
+
+        assert isinstance(result["tables"], list)
         
 
 # test extract and returns one table
-    @patch('python.src.extract.extract_handler.close_db')
-    @patch('python.src.extract.extract_handler.connect_to_db')
-    @patch('python.src.extract.extract_handler.query_db')
-    def test_lambda_handler_extracts_and_return_one_table(self,query_db_mm, connect_db,close_db, event,row,columns):
-        query_db_mm.return_value = (row, columns)
-        print("patch -------->",query_db_mm,)
+
+    def test_lambda_handler_extracts_and_return_one_table(self,query_db_mm, connect_db,close_db, save_s3, event,row,columns):
+        query_db_mm.return_value = ([row], columns)
         expected_result = ["table_name"]
 
         result = lambda_handler(event, {}) 
 
-        assert result == expected_result
+        assert result == {'tables': ['table_name']}
 
-    
+# # test extract and returns two tables
+
+    def test_lambda_handler_extracts_and_return_two_tables(self,query_db_mm, connect_db,close_db, save_s3, event_tables,row,columns):
+        query_db_mm.return_value = ([row], columns)
+        expected_result = ["table_name"]
+
+        result = lambda_handler(event_tables, {}) 
+
+        assert result == {'tables': ['table_name','sales']}
 # test if the data have been saved

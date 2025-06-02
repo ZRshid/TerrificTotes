@@ -30,9 +30,9 @@ def to_JSON(table_name:str, columns_data:list, rows:list[list], from_time: datet
 def add_time_keys(from_time, to_time, table_dict):
     """adds times to the first level of dictionary"""
     if from_time != None:
-        table_dict['from_time'] = datetime_to_str(from_time)
+        table_dict['from_time'] = from_time
     if to_time != None:
-        table_dict['to_time'] = datetime_to_str(to_time)
+        table_dict['to_time'] = to_time
 
 def name_rows(rows:list, column_names:list) -> list:
     """Gives each value in each row a name"""
