@@ -1,29 +1,22 @@
 from pg8000.native import Connection, InterfaceError, DatabaseError
-from dotenv import load_dotenv
-import os
 from datetime import datetime
 import decimal
 import logging
+from python.utils.utils import get_secret
 
-load_dotenv()
-
-
-# this will change to the secrets that contains the info of database
-# instead of using .env
-def connect_to_db():
-    """creates the connect to the totes db uses info from the .env"""
+def connect_to_db(secrets: str):
+    """create the connect to the totes db uses info from the aws secret manager"""
+    details = get_secret(secrets)
     return Connection(
-        user=os.getenv("PG_USER"),
-        password=os.getenv("PG_PASSWORD"),
-        database=os.getenv("PG_DATABASE"),
-        host=os.getenv("PG_HOST"),
-        port=int(os.getenv("PG_PORT")),
+        user = details['user'],
+        password = details['password'],
+        database = details['database'],   
+        host = details['host'],
+        port = int(details['port'])
     )
-
 
 def close_db(conn):
     conn.close()
-
 
 def format_result(result):
     """Format the result list by converting datetime and Decimal objects."""
@@ -39,7 +32,6 @@ def format_result(result):
                 formatted_row.append(value)
         formatted_result.append(formatted_row)
     return formatted_result
-
 
 def query_db(query: str, conn: Connection) -> tuple:
     """makes the query to the database
