@@ -33,3 +33,25 @@ variable "extract_zip" {
   type        = string
   default     = "extract_handler.zip"
 }
+
+# Variable evaluation periods
+variable "evaluation_periods" {
+  description = "number of evaluation periods for the cloudwatch alarm"
+  type        = number
+  default     = 1
+}
+variable "period" {
+  description = "Checks every 30 seconds for new data "
+  type        = number
+  default     = 30
+}
+variable "threshold" {
+  description = "Alarm will be triggered if there are 1 or more errors"
+  type        = number
+  default     = 1
+}
+variable "endpoint" {
+  description = "Email for SNS"
+  type        = string
+  default     = "ncproject.phase@gmail.com"
+}
