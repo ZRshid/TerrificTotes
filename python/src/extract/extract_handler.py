@@ -19,21 +19,21 @@ def lambda_handler(event, context):
 
     # take the table from the event list 
     table = event_dict['tables'][0]
-    from_time = datetime.strptime(event_dict['from_time']) 
-    to_time = datetime.strptime(event_dict['to_time']) 
+    from_time = event_dict['from_time']
+    to_time = event_dict['to_time'] 
     raw_data_bucket = event_dict['raw_data_bucket']
 
     # pass the table name and times to create SQL
     query = create_sql(table, from_time, to_time)
 
     # pass this SQL to query_db 
-    connect_to_db()
-    rows,columns = query_db(query) 
+    conn = connect_to_db()
+    rows,columns = query_db(query, conn) 
     close_db()
 
     # pass the tuple to json 
 
-    table_json = to_JSON(table, from_time, to_time)
+    table_json = to_JSON(table,rows,columns ,from_time, to_time)
 
     # pass the json to save raw_data
     #save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str): 
