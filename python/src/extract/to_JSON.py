@@ -23,7 +23,7 @@ def to_JSON(table_name:str, columns_data:list, rows:list[list], from_time: datet
 
     table_dict = {}
     add_time_keys(from_time, to_time, table_dict)
-    table_dict["table_name"] = named_rows
+    table_dict[f"{table_name}"] = named_rows
 
     return json.dumps(table_dict, default=str)
 

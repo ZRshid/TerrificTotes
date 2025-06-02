@@ -73,13 +73,13 @@ class TestTo_json:
 
         assert isinstance(hopefully_a_string,str)
     
-    def test_string_begins_with_table_key(self,columns_data):
+    def test_string_contains_table_key(self,columns_data):
         pg8000_result = [[1,2,3],[5,4,3]]
         table_name = "test"
 
-        start = '{'+f'"{table_name}": ['
+        contains = f'"{table_name}": ['
         hopefully_json = to_JSON(table_name,columns_data,pg8000_result)
-        assert hopefully_json.startswith(start)
+        assert hopefully_json.find(contains) >= 0
 
     def test_string_matches_pattern_of_expected_json(self,columns_data):
         #roughly I haven't checked data types are ok e.g what happens to dates
