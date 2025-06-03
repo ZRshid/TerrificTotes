@@ -130,7 +130,7 @@ resource "aws_iam_policy" "transform_s3_access" {
 
 resource "aws_iam_policy" "transform_s3_access_policy" {
   name   = "s3-access-policy-transform"
-  policy = data.aws_iam_policy_document.transform_s3_access.json
+  policy = data.aws_iam_policy_document.s3_access.json
 }
 
 # Attaches the S3 access policy to the Lambda's IAM role.
