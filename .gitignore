@@ -38,7 +38,7 @@ terraform.rc
 
 #Zip files for lambda handlers
 terraform/zips/
-
+package/
 #non terraform stuff
 *__pycache__
 venv/
@@ -48,3 +48,4 @@ venv/
 .coverage
 
 .vscode
+.DS_store
