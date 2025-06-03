@@ -6,6 +6,23 @@ logger = logging.getLogger() #This line creates a tool to write messages about w
 logger.setLevel(logging.INFO) #This line tells that tool to only pay attention to important messages and above
 
 def lambda_handler(event, context):
+    """
+    This function runs in AWS Lambda.
+
+    It checks if the event includes a list of tables. 
+    - If the list exists and isn’t empty, it logs a success message and returns the table names.
+    - If the list is missing or empty, it logs an error and returns a failure message.
+
+    Parameters:
+    - event: A dictionary with information, including a "tables" list.
+    - context: Info from AWS Lambda (not used here).
+
+    Returns:
+    - A dictionary with:
+        - "status": either "success" or "error"
+        - "message": what happened
+        - "tables": only included if it worked
+    """
     now = datetime.now()
     formatted_time = now.strftime("%Y-%m-%d %H:%M:%S.%f")[:-4]
     try:
