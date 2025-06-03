@@ -1,4 +1,4 @@
-from python.src.extract.helper_create_sql import create_sql, add_where_clause
+from src.extract.helper_create_sql import create_sql, add_where_clause
 from datetime import datetime, timedelta, timezone
 import pytest
 

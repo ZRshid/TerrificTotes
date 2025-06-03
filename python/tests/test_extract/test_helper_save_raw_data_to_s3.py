@@ -4,7 +4,7 @@ import boto3
 import pytest
 import json
 import re
-from python.src.extract.helper_save_raw_data_to_s3 import save_raw_data_to_s3
+from src.extract.helper_save_raw_data_to_s3 import save_raw_data_to_s3
 
 
 @pytest.fixture(autouse=True)

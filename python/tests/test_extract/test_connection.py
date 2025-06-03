@@ -1,5 +1,5 @@
-from python.src.extract.helper_create_sql import create_sql
-from python.src.extract.helper_query_db import close_db, query_db, connect_to_db
+from src.extract.helper_create_sql import create_sql
+from src.extract.helper_query_db import close_db, query_db, connect_to_db
 from datetime import datetime
 import pytest
 from unittest import mock
@@ -22,7 +22,7 @@ def test_returns_correct_datatype(mock_db_conn):
     from_time = datetime(2022, 11, 3, 14, 20, 52, 186000)
     to_time = datetime(2022, 11, 18, 12, 27, 9, 924000)
     with mock.patch(
-        "python.src.extract.helper_query_db.connect_to_db", return_value=mock_db_conn
+        "src.extract.helper_query_db.connect_to_db", return_value=mock_db_conn
     ):
         query = create_sql(table, from_time, to_time)
         result = query_db(query, mock_db_conn)

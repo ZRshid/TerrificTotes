@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "s3_access" {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
-      # "s3:DeleteObject" revisit permission later
+      "s3:DeleteObject" # revisit permission later
     ]
     resources = [
       "arn:aws:s3:::${var.backend_bucket}/*",

@@ -3,7 +3,7 @@ import json
 import os
 from unittest.mock import patch
 from moto import mock_aws
-from python.src.extract.extract_handler import lambda_handler
+from src.extract.extract_handler import lambda_handler
 
 ## extract one table and save it to the raw data bucket
 
@@ -58,10 +58,10 @@ def columns():
 #         yield client
 
 
-@patch("python.src.extract.extract_handler.save_raw_data_to_s3")
-@patch("python.src.extract.extract_handler.close_db")
-@patch("python.src.extract.extract_handler.connect_to_db")
-@patch("python.src.extract.extract_handler.query_db")
+@patch("src.extract.extract_handler.save_raw_data_to_s3")
+@patch("src.extract.extract_handler.close_db")
+@patch("src.extract.extract_handler.connect_to_db")
+@patch("src.extract.extract_handler.query_db")
 class TestLambdaHandler:
 
     def test_lambda_handler_returns_dict(

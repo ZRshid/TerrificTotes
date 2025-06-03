@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from python.utils.utils import datetime_to_str
+from utils.utils import datetime_to_str
 
 
 def to_JSON(

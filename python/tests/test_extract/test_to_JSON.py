@@ -1,4 +1,4 @@
-from python.src.extract.helper_json import (
+from src.extract.helper_json import (
     to_JSON,
     extract_names_from_columns_data,
     name_rows,
