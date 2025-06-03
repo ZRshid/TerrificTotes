@@ -1,3 +1,8 @@
+# ---------------
+# Lambda extract 
+# ---------------
+
+
 # Zips the extract handler file for Lambda deployment.
 data "archive_file" "zip_extract_handler" {
   type        = "zip"
@@ -33,3 +38,4 @@ resource "aws_lambda_function" "extract_handler" {
     }
   }
 }
+

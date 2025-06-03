@@ -37,3 +37,23 @@ resource "aws_s3_bucket_versioning" "tt_zip_bucket_versioning" {
     status = "Disabled"
   }
 }
+
+###################### ADDED 
+# Creates an S3 bucket for storing processed data after being converted to parquet format.
+resource "aws_s3_bucket" "processed_data_bucket" {
+  bucket = var.processed_data_bucket
+  force_destroy = true
+  tags = {
+    Name = "tt_processed_data_bucket"
+    Environment = "Dev"
+  }
+}
+##### I HAVE LEFT THIS ACTIVE
+# Adds versioning configuration to the processed_data bucket 
+resource "aws_s3_bucket_versioning" "tt_procesed_data_versioning" {
+  # Enable versioning for the TT Terraform state bucket
+  bucket = aws_s3_bucket.processed_data_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}

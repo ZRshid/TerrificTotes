@@ -8,7 +8,9 @@
 # Lambda IAM Role
 # ---------------
 
-
+# -------------------------
+# Lambda IAM Role - EXTRACT
+# -------------------------
 # Defines a trust policy that allows AWS Lambda to assume this role.
 
 data "aws_iam_policy_document" "trust_policy" {
@@ -48,7 +50,7 @@ data "aws_iam_policy_document" "s3_access" {
       # Bucket names globally unique
       "arn:aws:s3:::${var.backend_bucket}",
       "arn:aws:s3:::${var.raw_data_bucket}",
-      "arn:aws:s3:::${var.zip_bucket}"
+      "arn:aws:s3:::${var.zip_bucket}", 
       
     ]
   }
@@ -62,7 +64,7 @@ data "aws_iam_policy_document" "s3_access" {
     resources = [
       "arn:aws:s3:::${var.backend_bucket}/*",
       "arn:aws:s3:::${var.raw_data_bucket}/*",
-      "arn:aws:s3:::${var.zip_bucket}/*"
+      "arn:aws:s3:::${var.zip_bucket}/*",
     ]
   }
 }
@@ -79,6 +81,64 @@ resource "aws_iam_role_policy_attachment" "lambda_access_policy_attachment" {
     role = aws_iam_role.lambda_role.name # lambda_role to be changed for each lambda
     policy_arn = aws_iam_policy.s3_access_policy.arn
 }
+
+############ CHANGES BELOW
+# ---------------------------
+# Lambda IAM Role - TRANSFORM 
+# ---------------------------
+# Trust policy document already present
+
+
+# Creates an IAM role for the Lambda function using the trust policy defined above.
+resource "aws_iam_role" "transform_lambda_role" {
+  name               = "transform_lambda_role"
+  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+}
+
+
+# ------------------------------
+# S3 Access Policy for Transform Lambda
+# ------------------------------
+resource "aws_iam_policy" "transform_s3_access" {
+  name = "transform-s3-access"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = ["s3:ListBucket"],
+        Resource = [
+          "arn:aws:s3:::${var.raw_data_bucket}",
+          "arn:aws:s3:::${var.processed_data_bucket}"
+        ]
+      },
+      {
+        Effect = "Allow",
+        Action = ["s3:GetObject", "s3:PutObject"],
+        Resource = [
+          "arn:aws:s3:::${var.raw_data_bucket}/*",
+          "arn:aws:s3:::${var.processed_data_bucket}/*"
+        ]
+      }
+    ]
+  })
+}
+
+
+# Creates the actual IAM policy using the above document.
+
+resource "aws_iam_policy" "transform_s3_access_policy" {
+  name   = "s3-access-policy-transform"
+  policy = data.aws_iam_policy_document.transform_s3_access.json
+}
+
+# Attaches the S3 access policy to the Lambda's IAM role.
+resource "aws_iam_role_policy_attachment" "transform_s3_policy_attach" {
+  role       = aws_iam_role.transform_lambda_role.name
+  policy_arn = aws_iam_policy.transform_s3_access_policy.arn
+}
+
 
 # ------------------------------
 # Resource AWS Secrets Manager 
@@ -141,10 +201,13 @@ data "aws_iam_policy_document" "cw_document" {
       "logs:PutLogEvents"
     ]
     # edit when more lambdas will be added 
+    ## THIS NEEDS TO BE UPDATED
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"]
   }
 }
 
+
+##### EXTRACT CLOUDWATCH
 # Creates a CloudWatch IAM policy from the above document. 
 resource "aws_iam_policy" "cw_policy" {
   # use the policy document defined above
@@ -158,6 +221,12 @@ resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
   # attach the cw policy to the lambda role
   # edit when more lambdas will be added 
   role = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.cw_policy.arn
+}
+
+##### TRANSFORM CLOUDWATCH
+resource "aws_iam_role_policy_attachment" "transform_cw_policy_attach" {
+  role       = aws_iam_role.transform_lambda_role.name
   policy_arn = aws_iam_policy.cw_policy.arn
 }
 
