@@ -30,3 +30,4 @@ resource "aws_sns_topic_subscription" "email_alert" {
   protocol  = "email"
   endpoint  = var.endpoint   # Email address to send alerts to
 }
+
