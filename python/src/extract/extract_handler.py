@@ -26,7 +26,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
         dict: A dictionary with the key tables, a list of extracted tables.
     """
     # convert json to dict
-    event_dict = json.loads(event)
+    event_dict = event #json.loads(event)
 
     from_time = event_dict["from_time"]
     to_time = event_dict["to_time"]
@@ -70,9 +70,9 @@ def lambda_handler(event: dict, context: dict) -> dict:
 
 
 if __name__ == "__main__":
-    event = """{"tables" : ["counterparty", "currency", "department", "design", "staff", "sales_order", 
+    event = {"tables" : ["counterparty", "currency", "department", "design", "staff", "sales_order", 
                 "address", "payment", "purchase_order", "payment_type", "transaction"],
                 "from_time" : "2022-01-01 11:30:55.00",
                 "to_time" : "2025-06-02 11:31:55.00", "raw_data_bucket" : "tt-raw-data"
-                }"""
+                }
     lambda_handler(event, {})
