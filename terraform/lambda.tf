@@ -19,7 +19,7 @@ data "archive_file" "zip_extract_handler" {
   ]
   output_path = "${path.module}/zips/extract_handler.zip"
 }
-
+# Zips the extract handler file for Lambda deployment.
 data "archive_file" "pg8000_layer" {
   type        = "zip"
   source_dir  = "${path.root}/package/"
@@ -42,6 +42,7 @@ resource "aws_s3_object" "extract_layer" {
   etag = filemd5(data.archive_file.pg8000_layer.output_path)
 }
 
+#create a layer for the pg8000 dependencies
 resource "aws_lambda_layer_version" "extract_layer_version" {
   # filename         = data.archive_file.pg8000_layer.output_paths
   s3_key = aws_s3_object.extract_layer.key
@@ -60,7 +61,7 @@ resource "aws_lambda_function" "extract_handler" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "src.extract.extract_handler.lambda_handler"
   runtime       = "python3.13"
-  timeout       = 60
+  timeout       = 30
 
   depends_on = [
     data.archive_file.zip_extract_handler,
