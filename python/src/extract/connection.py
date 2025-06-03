@@ -2,7 +2,7 @@ from pg8000.native import Connection, InterfaceError, DatabaseError
 from datetime import datetime
 import decimal
 import logging
-from python.utils.utils import get_secret
+from utils.utils import get_secret
 
 def connect_to_db(secrets: str):
     """create the connect to the totes db uses info from the aws secret manager"""

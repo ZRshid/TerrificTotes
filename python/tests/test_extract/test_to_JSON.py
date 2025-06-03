@@ -1,4 +1,4 @@
-from python.src.extract.to_JSON import (to_JSON,
+from src.extract.to_JSON import (to_JSON,
                                         extract_names_from_columns_data, 
                                         name_rows,
                                         LengthMissMatchException

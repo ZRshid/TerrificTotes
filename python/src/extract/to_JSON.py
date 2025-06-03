@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from python.utils.utils import datetime_to_str
+from utils.utils import datetime_to_str
 
 def to_JSON(table_name:str, columns_data:list, rows:list[list], from_time: datetime|None = None, to_time: datetime|None = None) -> str:
     """Converts the response from the database request into some json with the form:\n
