@@ -4,34 +4,38 @@ import decimal
 import logging
 from utils.utils import get_secret
 
+
 def connect_to_db(secrets: str):
     """create the connect to the totes db uses info from the aws secret manager"""
     details = get_secret(secrets)
     return Connection(
-        user = details['user'],
-        password = details['password'],
-        database = details['database'],   
-        host = details['host'],
-        port = int(details['port'])
+        user=details["user"],
+        password=details["password"],
+        database=details["database"],
+        host=details["host"],
+        port=int(details["port"]),
     )
+
 
 def close_db(conn):
     conn.close()
 
-def format_result(result):
-    """Format the result list by converting datetime and Decimal objects."""
-    formatted_result = []
-    for row in result:
-        formatted_row = []
-        for value in row:
-            if isinstance(value, datetime):
-                formatted_row.append(value.strftime("%Y-%m-%d %H:%M:%S"))
-            elif isinstance(value, decimal.Decimal):
-                formatted_row.append(float(value))
-            else:
-                formatted_row.append(value)
-        formatted_result.append(formatted_row)
-    return formatted_result
+
+# def format_result(result):
+#     """Format the result list by converting datetime and Decimal objects."""
+#     formatted_result = []
+#     for row in result:
+#         formatted_row = []
+#         for value in row:
+#             if isinstance(value, datetime):
+#                 formatted_row.append(value.strftime("%Y-%m-%d %H:%M:%S"))
+#             elif isinstance(value, decimal.Decimal):
+#                 formatted_row.append(float(value))
+#             else:
+#                 formatted_row.append(value)
+#         formatted_result.append(formatted_row)
+#     return formatted_result
+
 
 def query_db(query: str, conn: Connection) -> tuple:
     """makes the query to the database
@@ -56,5 +60,5 @@ def query_db(query: str, conn: Connection) -> tuple:
     except InterfaceError as i:
         logging.error(f"error interfacing to database: {i}")
         raise InterfaceError
-    finally:
-        close_db(conn)
+    # finally:
+    #     close_db(conn)

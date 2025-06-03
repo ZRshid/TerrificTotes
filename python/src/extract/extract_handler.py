@@ -2,7 +2,7 @@ import logging
 import json
 from src.extract.helper_create_sql import create_sql
 from src.extract.helper_query_db import connect_to_db, close_db, query_db
-from src.extract.helper_json import to_JSON
+from src.extract.to_JSON import to_JSON
 from src.extract.helper_save_raw_data_to_s3 import save_raw_data_to_s3
 
 # this can set any level of that the message actually appears
