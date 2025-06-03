@@ -1,4 +1,4 @@
-from src.extract.to_JSON import (to_JSON,
+from src.extract.helper_json import (to_JSON,
                                         extract_names_from_columns_data, 
                                         name_rows,
                                         LengthMissMatchException
@@ -138,10 +138,10 @@ class TestTo_json:
     def test_times_are_in_correct_format(self, columns_data):
         pg8000_result = [[1,2,3],[5,4,3]]
         table_name = "test"
-        to_dt = datetime(2025,4,3,2,1,0,123456)
+        to_dt = "2025-04-03 02:01:00.123"
         to_will_contain = "2025-04-03 02:01:00.123"
-        from_dt = datetime(2025,4,3,2,1,0,0)
-        from_will_contain = "2025-04-03 02:01:00.000"
+        from_dt = "2025-04-03 02:01:00.00"
+        from_will_contain = "2025-04-03 02:01:00.00"
 
         json_str = to_JSON(table_name,columns_data,pg8000_result,from_time=from_dt,to_time=to_dt)
 
