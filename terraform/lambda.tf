@@ -30,17 +30,20 @@ resource "aws_s3_object" "extract_lambda_code" {
 }
 
 # Uploads the ZIP file to the designated S3 bucket.
-resource "aws_s3_object" "extract_lambda_layer" {
+resource "aws_s3_object" "extract_layer" {
   bucket = aws_s3_bucket.zip_bucket.bucket
   key    = "pg8000-package.zip"
   source = data.archive_file.pg8000_layer.output_path
   etag = filemd5(data.archive_file.pg8000_layer.output_path)
 }
 
-resource "aws_lambda_layer_version" "lambda_package_layer" {
-  filename         = data.archive_file.pg8000_layer.output_path
+resource "aws_lambda_layer_version" "extract_layer_version" {
+  # filename         = data.archive_file.pg8000_layer.output_paths
+  s3_key = aws_s3_object.extract_layer.key
+  s3_bucket = aws_s3_object.extract_layer.bucket
   layer_name       = "lambda_python_package"
-  source_code_hash = data.archive_file.pg8000_layer.output_base64sha256
+  source_code_hash = "${filebase64sha256(data.archive_file.pg8000_layer.output_path)}"#data.archive_file.pg8000_layer.output_base64sha256
+  depends_on = [ aws_s3_object.extract_layer ]
 }
 
 # Create the lambda function with the extract handler python file
@@ -57,14 +60,14 @@ resource "aws_lambda_function" "extract_handler" {
   depends_on = [
     data.archive_file.zip_extract_handler,
     aws_s3_bucket.zip_bucket,
-    aws_s3_object.extract_lambda_layer
+    aws_s3_object.extract_layer
   ]
 
   s3_bucket        = aws_s3_object.extract_lambda_code.bucket
   s3_key           = aws_s3_object.extract_lambda_code.key
-  source_code_hash = aws_s3_object.extract_lambda_code.etag
+  source_code_hash = aws_s3_object.extract_lambda_code.etag#data.archive_file.zip_extract_handler.output_base64sha256
 
-  layers = [aws_lambda_layer_version.lambda_package_layer.arn]
+  layers = [aws_lambda_layer_version.extract_layer_version.arn]
 
   publish = true
   environment {
