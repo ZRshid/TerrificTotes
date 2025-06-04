@@ -1,11 +1,7 @@
-import json
 import os
-import boto3.session
 import botocore
-import botocore.errorfactory
 import pytest
 import pandas as pd
-# import awswrangler as wr
 import boto3
 from moto import mock_aws
 from src.transform.load_json import load_json
@@ -31,7 +27,7 @@ def s3():
 
 @pytest.fixture(autouse=True)
 def aws_credentials():
-    """Mocked AWS Credentials for moto."""
+    """Mocked AWS Credentials."""
     os.environ['AWS_ACCESS_KEY_ID'] = 'test'
     os.environ['AWS_SECRET_ACCESS_KEY'] = 'test'
     os.environ['AWS_SECURITY_TOKEN'] = 'test'
@@ -40,7 +36,6 @@ def aws_credentials():
 
 @pytest.fixture()
 def s3_with_bucket(s3):
-    
     s3.create_bucket(
         Bucket=TEST_BUCKET,
         CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'}
@@ -53,13 +48,6 @@ def s3_with_bucket(s3):
     return s3
 
 class TestLoadJson:
-    # @patch("src.transform.load_json.wr")
-    # def test_returns_dataframe(self, wr):
-    #     expected = pd.DataFrame({'key': [1, 2], 'key2': [2, 3]})
-    #     wr.s3.read_json.return_value=expected
-    #     result = load_json('bucket', 'key')
-    #     assert isinstance(result, pd.DataFrame)
-
     def test_returns_dataframe(self,s3_with_bucket):
         s3 = s3_with_bucket
         result_df = load_json(TEST_BUCKET,TEST_KEY,TEST_TABLE,s3)
