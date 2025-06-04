@@ -1,12 +1,15 @@
 import pandas as pd
-import json
 
 def transform_location(address: pd.DataFrame) -> pd.DataFrame:
-    #create new dataframe using address changing it to location
-    #create address_id column
-    #drop created and last updated columns
-    #return dataframe
-    # print(address)
-    df = address.loc["address"]
-    print(df)
-    return address
+    """transform the address dataframe to dim_address table
+
+    Args:
+        address (pd.DataFrame): the address dataframe
+
+    Returns:
+        pd.DataFrame: dim_address from star schema
+    """
+
+    df_dropped_columns = address.drop(["created_at", "last_updated", "from_time" ,"to_time"], axis='columns', errors="ignore")
+    df_changed_name = df_dropped_columns.rename(columns={"address_id": "location_id"})
+    return df_changed_name
