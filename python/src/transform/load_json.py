@@ -1,7 +1,6 @@
 import awswrangler as wr
 import pandas as pd
 import logging
-import boto3
 import json
 
 
@@ -15,7 +14,7 @@ def load_json(bucket: str, key: str, table: str, s3) -> pd.DataFrame:
         bucket (str): The s3 bucket.
         key (str): The files key, including path.
         table (str): The table it is loading from.
-        s3: A boto3 3s client.
+        s3: A boto3 s3 client.
 
     Raises:
         e: ClientErrors and others.

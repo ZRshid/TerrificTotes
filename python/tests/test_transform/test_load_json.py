@@ -49,8 +49,7 @@ def s3_with_bucket(s3):
 
 class TestLoadJson:
     def test_returns_dataframe(self,s3_with_bucket):
-        s3 = s3_with_bucket
-        result_df = load_json(TEST_BUCKET,TEST_KEY,TEST_TABLE,s3)
+        result_df = load_json(TEST_BUCKET,TEST_KEY,TEST_TABLE,s3_with_bucket)
         assert isinstance(result_df, pd.DataFrame)
 
     def test_returns(self,s3_with_bucket):
