@@ -1,5 +1,4 @@
-codes-all
-Entity,Currency,AlphabeticCode
+country,currency_name,currency_code
 AFGHANISTAN,Afghani,AFN
 ÅLAND ISLANDS,Euro,EUR
 ALBANIA,Lek,ALL
