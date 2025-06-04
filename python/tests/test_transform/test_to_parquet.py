@@ -43,7 +43,7 @@ class TestToParquet:
         print(response)
         assert len(response.get("Contents", [])) > 0
 
-    def test_raw_data_bucket_contains_parquet_files(self, s3, dataframe):
+    def test_processed_data_bucket_contains_parquet_files(self, s3, dataframe):
         to_parquet(dataframe, "test-bucket", "test")
         response = s3.list_objects_v2(
             Bucket = "test-bucket"
@@ -51,7 +51,7 @@ class TestToParquet:
         file_ends = [item["Key"].endswith(".parquet") for item in response["Contents"]]
         assert all(file_ends)
 
-    def test_raw_data_bucket_contains_files_with_timestamp(self, s3, dataframe):
+    def test_processed_data_bucket_contains_files_with_timestamp(self, s3, dataframe):
         to_parquet(dataframe, "test-bucket", "test")
         response = s3.list_objects_v2(
             Bucket = "test-bucket"
@@ -62,7 +62,7 @@ class TestToParquet:
         files = [re.search(pattern, item["Key"].split("/")[-1]) for item in response["Contents"]]
         assert all(files)
 
-    def test_raw_data_bucket_contains_files_with_correct_content(self, s3, dataframe):
+    def test_processed_data_bucket_contains_files_with_correct_content(self, s3, dataframe):
         to_parquet(dataframe, "test-bucket", "test")
         response = s3.list_objects_v2(
             Bucket = "test-bucket"
