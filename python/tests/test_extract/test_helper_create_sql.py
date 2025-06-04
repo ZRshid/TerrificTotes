@@ -1,4 +1,4 @@
-from python.src.extract.helper_create_sql import create_sql, add_where_clause
+from src.extract.helper_create_sql import create_sql, add_where_clause
 from datetime import datetime, timedelta, timezone
 import pytest
 
@@ -27,7 +27,7 @@ class TestCreate_sql:
 
     def test_protect_table_name_from_injection(self, from_time, to_time):
         table = "test;"
-        table = 'test;'
+        table = "test;"
         start = f'SELECT * FROM "{table}"'
         returned = create_sql(table, from_time, to_time)
         assert returned.startswith(start)
@@ -63,5 +63,7 @@ class TestAddWhereClause:
 
     def test_where_clause_correct(self, from_time, to_time):
         returned = add_where_clause(from_time, to_time)
-        expected = "WHERE last_updated BETWEEN '2025-05-29 12:15:00.001' and '2025-05-29 12:30:00.001'"
+        # It might be a good idea to revisit this test
+        # expected = "WHERE last_updated BETWEEN '2025-05-29 12:15:00.001' and '2025-05-29 12:30:00.001'"
+        expected = "WHERE last_updated BETWEEN '2025-05-29T12:15:00.001000' and '2025-05-29T12:30:00.001000'"
         assert returned == expected

@@ -1,4 +1,4 @@
-from python.utils.utils import get_secret, datetime_to_str
+from utils.utils import get_secret, datetime_to_str
 import os  
 import boto3
 from botocore.exceptions import ClientError

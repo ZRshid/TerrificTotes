@@ -1,4 +1,4 @@
-from python.src.transform.load_json import load_json
+from src.transform.load_json import load_json
 import pytest
 from unittest.mock import patch
 import pandas as pd
