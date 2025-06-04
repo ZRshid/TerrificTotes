@@ -1,9 +1,6 @@
 from pg8000.native import identifier, literal
 import datetime
 
-# time utc
-
-
 def create_sql(table: str, from_time: str, to_time: str) -> str:
     """produces a sql string that selects all columns from a given table with a
     time from and to from a given time

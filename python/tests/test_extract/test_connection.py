@@ -1,165 +1,59 @@
-from src.extract.helper_json import (
-    to_JSON,
-    extract_names_from_columns_data,
-    name_rows,
-    LengthMissMatchException,
-)
-import re
+from src.extract.helper_create_sql import create_sql
+from src.extract.helper_query_db import close_db, query_db, connect_to_db
 from datetime import datetime
 import pytest
+from unittest import mock
+from pg8000.native import InterfaceError, DatabaseError
 
 
-class TestName_Rows:
-    def test_returns_a_list_of_dicts(self):
-        pg8000_result = [[1, 2, 3]]
-        columns = ["a", "b", "c"]
-
-        returned = name_rows(pg8000_result, columns)
-
-        assert isinstance(returned, list)
-        assert isinstance(returned[0], dict)
-
-    def test_dict_contains_correct_keys(self):
-        pg8000_result = [[1, 2, 3]]
-        columns = ["a", "b", "c"]
-
-        returned = name_rows(pg8000_result, columns)
-
-        assert "a" in returned[0]
-        assert "b" in returned[0]
-        assert "c" in returned[0]
-
-    def test_dict_contains_correct_values(self):
-        pg8000_result = [[1, 2, 3]]
-        columns = ["a", "b", "c"]
-
-        returned = name_rows(pg8000_result, columns)
-
-        assert returned[0]["a"] == 1
-        assert returned[0]["b"] == 2
-        assert returned[0]["c"] == 3
-
-
-class TestExtract_names_from_columns_data:
-    def test_list_returned(self):
-        columns_data = [{"name": 1}]
-        hopefully_a_list = extract_names_from_columns_data(columns_data)
-        assert isinstance(hopefully_a_list, list)
-
-    def test_correct_list_returned(self):
-        columns_data = [{"name": "test"}, {"name": "experiment", "number": 1}]
-
-        expected_names = ["test", "experiment"]
-        actual_list = extract_names_from_columns_data(columns_data)
-
-        assert actual_list == expected_names
-
-
-@pytest.fixture(scope="class")
-def columns_data():
-    return [
-        {"column_attrnum": 1, "format": 0, "name": "id"},
-        {"column_attrnum": 2, "format": 0, "name": "sales"},
-        {"column_attrnum": 2, "format": 0, "name": "date"},
+@pytest.fixture
+def mock_db_conn():
+    mock_conn = mock.Mock()
+    mock_conn.run.return_value = [
+        ("2022-11-03 14:20:52", "1"),
+        ("2022-11-18 12:27:09", "2"),
     ]
+    mock_conn.columns = ["timestamp", "id"]
+    return mock_conn
 
 
-class TestTo_json:
-    ...
-    # test is json etx and
-    # in correct shape.
-    # raises errors if result is not in the correct format?
-    #       i.e sql returned the wrong thing??
+def test_returns_correct_datatype(mock_db_conn):
+    table = "sales_order"
+    from_time = datetime(2022, 11, 3, 14, 20, 52, 186000)
+    to_time = datetime(2022, 11, 18, 12, 27, 9, 924000)
+    with mock.patch(
+        "src.extract.helper_query_db.connect_to_db", return_value=mock_db_conn
+    ):
+        query = create_sql(table, from_time, to_time)
+        result = query_db(query, mock_db_conn)
+        # formatted_result = format_result(result)
+    close_db(mock_db_conn)
+    assert isinstance(result, tuple)
+    assert isinstance(result[0], list)
+    assert isinstance(result[1], list)
 
-    def test_string_returned(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, 3]]
-        table_name = "test"
 
-        hopefully_a_string = to_JSON(table_name, columns_data, pg8000_result)
+def test_database_error_raises(mock_db_conn):
+    table = "sales_order"
+    from_time = datetime(2022, 11, 3, 14, 20, 52, 186000)
+    to_time = datetime(2022, 11, 18, 12, 27, 9, 924000)
+    close_db(mock_db_conn)
+    with pytest.raises(DatabaseError) as d:
+        conn = mock.Mock()
+        conn.run.side_effect = DatabaseError()
+        query = create_sql(table, from_time, to_time)
+        result = query_db(query, conn)
+        close_db(conn)
 
-        assert isinstance(hopefully_a_string, str)
 
-    def test_string_contains_table_key(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, 3]]
-        table_name = "test"
-
-        contains = f'"{table_name}": ['
-        hopefully_json = to_JSON(table_name, columns_data, pg8000_result)
-        assert hopefully_json.find(contains) >= 0
-
-    def test_string_matches_pattern_of_expected_json(self, columns_data):
-        # roughly I haven't checked data types are ok e.g what happens to dates
-        pattern = r'^\{".+": \[(\{".+": .+\}, )*\{".+": .+\}\]\}$'
-        reg_ex = re.compile(pattern)
-        from datetime import datetime
-
-        pg8000_result = [[1, 2, 3], [5, "4", 38.6]]
-        table_name = "test2"
-
-        hopefully_json = to_JSON(table_name, columns_data, pg8000_result)
-        assert reg_ex.match(hopefully_json) != None
-
-    def test_it_dumps_datetime_correctly(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, datetime.now()]]
-        table_name = "test"
-        try:
-            to_JSON(table_name, columns_data, pg8000_result)
-        except Exception as e:
-            print("An error should not happen here but did:", e)
-            assert e != None  # always going to fail if it gets here
-
-    # note:
-    #  not for this function but:
-    #  what to do about timezone info (is it a timezone datetime or unzoned)
-    #  does it matter when the dates in the nc database don't have timezones
-
-    ### might also need to check other types e.g interval/datetime.timedelta
-    # https://pypi.org/project/pg8000/#:~:text=Type%20Mapping
-    # - the nc tables don't seem to use it so I wont bother right now.
-
-    def test_raise_exception_if_different_number_of_rows_and_names_(self):
-        pg8000_result = [[1, 2, 3], [5, 4, datetime.now()]]
-        table_name = "test"
-        columns_data = [
-            {"column_attrnum": 1, "format": 0, "name": "id"},
-            {"column_attrnum": 2, "format": 0, "name": "sales"},
-        ]
-        with pytest.raises(LengthMissMatchException) as excpt:
-            to_JSON(table_name, columns_data, pg8000_result)
-            print(excpt)
-
-    def test_when_has_from_time_it_is_in_dictionary(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, 3]]
-        table_name = "test"
-
-        should_have_from_time = to_JSON(
-            table_name, columns_data, pg8000_result, from_time=datetime.now()
-        )
-
-        assert "from_time" in should_have_from_time
-
-    def test_when_has_to_time_it_is_in_dictionary(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, 3]]
-        table_name = "test"
-
-        should_have_from_time = to_JSON(
-            table_name, columns_data, pg8000_result, to_time=datetime.now()
-        )
-
-        assert "to_time" in should_have_from_time
-
-    def test_times_are_in_correct_format(self, columns_data):
-        pg8000_result = [[1, 2, 3], [5, 4, 3]]
-        table_name = "test"
-        to_dt = datetime(2025, 4, 3, 2, 1, 0, 123456)
-        to_will_contain = "2025-04-03 02:01:00.123"
-        from_dt = datetime(2025, 4, 3, 2, 1, 0, 0)
-        
-        from_will_contain = "2025-04-03 02:01:00"
-
-        json_str = to_JSON(
-            table_name, columns_data, pg8000_result, from_time=from_dt, to_time=to_dt
-        )
-
-        assert to_will_contain in json_str
-        assert from_will_contain in json_str
+def test_interface_error_raises(mock_db_conn):
+    table = "sales_order"
+    from_time = datetime(2022, 11, 3, 14, 20, 52, 186000)
+    to_time = datetime(2022, 11, 18, 12, 27, 9, 924000)
+    close_db(mock_db_conn)
+    with pytest.raises(InterfaceError) as i:
+        conn = mock.Mock()
+        conn.run.side_effect = InterfaceError()
+        query = create_sql(table, from_time, to_time)
+        result = query_db(query, conn)
+        close_db(conn)
