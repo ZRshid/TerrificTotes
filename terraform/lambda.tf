@@ -23,7 +23,7 @@ data "archive_file" "zip_extract_handler" {
 data "archive_file" "pg8000_layer" {
   type        = "zip"
   source_dir  = "${path.root}/package/"
-  output_path = "${path.root}/zips/package.zip"
+  output_path = "${path.root}/zips/pg8000-package.zip"
 }
 
 # Uploads the ZIP file to the designated S3 bucket.
@@ -75,7 +75,7 @@ resource "aws_lambda_function" "extract_handler" {
 
   layers = [aws_lambda_layer_version.extract_layer_version.arn]
 
-  publish = true
+  //publish = true
   environment {
     variables = {
       BUCKET_NAME = var.zip_bucket

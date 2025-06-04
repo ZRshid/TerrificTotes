@@ -9,7 +9,6 @@ from src.extract.helper_save_raw_data_to_s3 import save_raw_data_to_s3
 # otherwise its default is none which doesnt log it
 logging.getLogger().setLevel(logging.INFO)
 
-
 def lambda_handler(event: dict, context: dict) -> dict:
     """
     A handler function to extract data from tables specified in the event,
@@ -25,18 +24,15 @@ def lambda_handler(event: dict, context: dict) -> dict:
     Returns:
         dict: A dictionary with the key tables, a list of extracted tables.
     """
-    # convert json to dict
-    event_dict = event #json.loads(event)
-
-    from_time = event_dict["from_time"]
-    to_time = event_dict["to_time"]
-    raw_data_bucket = event_dict["raw_data_bucket"]
-
+    from_time = event["from_time"]
+    to_time = event["to_time"]
+    raw_data_bucket = event["raw_data_bucket"]
+    timestamp = to_time[:-2]
     # take the table from the event list
     tables = []
     try:
         conn = connect_to_db("totesys_secret")
-        for table in event_dict["tables"]:
+        for table in event["tables"]:
             # pass the table name and times to create SQL
             query = create_sql(table, from_time, to_time)
 
@@ -48,7 +44,9 @@ def lambda_handler(event: dict, context: dict) -> dict:
 
             # pass the json to save raw_data
             save_raw_data_to_s3(
-                raw_data=table_json, table_name=table, bucket_name=raw_data_bucket
+                raw_data=table_json, table_name=table, 
+                bucket_name=raw_data_bucket,
+                timestamp=timestamp
             )
 
             tables.append(table)
