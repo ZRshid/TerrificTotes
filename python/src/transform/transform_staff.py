@@ -2,7 +2,7 @@ import pandas as pd
 import logging
 
 def transform_staff_with_department(staff_data:pd.DataFrame,dept_data:pd.DataFrame) -> pd.DataFrame:
-    """Creates the staff dimensiong from staff_data, by inserting columns for department name and location,
+    """Creates the staff dimension from staff_data, by inserting columns for department name and location,
     with data from dept_data with the department_id.
 
     Args:
@@ -24,13 +24,13 @@ def transform_staff_with_department(staff_data:pd.DataFrame,dept_data:pd.DataFra
 
         staff_dim_df = staff_dim_df.join(dept_data,on="department_id")
         #check if there are any nul values after the join.
-        df_nan_rows = staff_dim_df.loc[staff_dim_df.isnull().any(axis=1)]
+        df_nan_rows = staff_dim_df.loc[staff_dim_df.isnull().any(axis='columns')]
         if df_nan_rows.shape[0]>0:
             id_s = df_nan_rows['staff_id']
             id_st = id_s.to_string(index=False, header=False)
             raise NullInDataFrameException(f'Null values are present in staff_dim after join on department_id. id: {id_st}')
         
-        staff_dim_df = staff_dim_df.drop('department_id', axis=1)
+        staff_dim_df = staff_dim_df.drop('department_id', axis='columns')
         
         return staff_dim_df
     except Exception as e:
