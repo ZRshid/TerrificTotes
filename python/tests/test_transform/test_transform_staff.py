@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from src.transform.transform_staff import transform_staff_with_department
+from src.transform.transform_staff import transform_staff_with_department, NullInDataFrameException
 EXAMPLE_STAFF = {"staff": [
                     {"staff_id": 1, "first_name": "Jeremie", "last_name": "Franey", "department_id": 2, "email_address": "jeremie.franey@terrifictotes.com", "created_at": "2022-11-03 14:20:51.563000", "last_updated": "2022-11-03 14:20:51.563000"},
                     {"staff_id": 2, "first_name": "Deron", "last_name": "Beier", "department_id": 6, "email_address": "deron.beier@terrifictotes.com", "created_at": "2022-11-03 14:20:51.563000", "last_updated": "2022-11-03 14:20:51.563000"}
@@ -49,4 +49,11 @@ class TestTransform_staff_with_department():
         location = returned_df.loc[person]['location']
         
         assert  location == expected_location
+    def test_raised_if_department_id_is_missing(self,staff_df,dept_df):
+        expected_location = 'Leeds'
+        person = 'Deron'
+        staff_df.loc[staff_df['first_name'] == person, 'department_id'] = 26
+        with pytest.raises(NullInDataFrameException) as exc:
+            returned_df = transform_staff_with_department(staff_df,dept_df)
+        
 
