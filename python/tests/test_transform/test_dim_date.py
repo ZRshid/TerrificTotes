@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from python.src.transform.dim_date import dim_date
+from src.transform.dim_date import dim_date
 
 @pytest.fixture
 def dummy_data():
