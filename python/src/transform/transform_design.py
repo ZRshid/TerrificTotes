@@ -10,7 +10,7 @@ def transform_design(design:pd.DataFrame):
     Returns:
         The transformed table 
     Raises:
-        Exception: If there is an error when tarnaforming the design table .
+        Exception: If there is an error when transforming the design table .
     """
     try:
         df_updated_design_table = design.drop(columns=["created_at", "last_updated"] , axis =1)
@@ -20,6 +20,3 @@ def transform_design(design:pd.DataFrame):
     except Exception as e:
         logging.error(msg=f"Failed to make the design datafram: {e}")
         raise e
-
-
-
