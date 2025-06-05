@@ -54,7 +54,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: ${BRANCH_NAME}
+          ref: workflow-test
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
