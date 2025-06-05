@@ -25,6 +25,23 @@ def transform_counterparty(
                 "counterparty_legal_phone_number",
             }
     """
+    
+    if not isinstance(counterparty, pd.DataFrame):
+        raise TypeError("counterparty is a dataframe")
+    if not isinstance(address, pd.DataFrame):
+        raise TypeError("address is a dataframe")
+    
+    required_counterparty_columns = {"counterparty_id", "counterparty_legal_name", "legal_address_id"}
+    required_address_columns = {"address_id", "address_line_1", "city", "postal_code", "country", "phone"}
+
+    if not required_counterparty_columns.issubset(counterparty.columns):
+        missing = required_counterparty_columns - set(counterparty.columns)
+        raise ValueError(f"required columns missing in counterparty: {missing}")
+    
+    if not required_address_columns.issubset(address.columns):
+        missing = required_address_columns - set(address.columns)
+        raise ValueError(f"required columns missing in address: {missing}")
+    
     try:
         df_drop_address = address.drop(
             ["created_at", "last_updated", "from_time", "to_time"],
@@ -64,8 +81,8 @@ def transform_counterparty(
                 "phone": "counterparty_legal_phone_number",
             }
         )
-
+        logging.info(msg="successfully create dim_counterparty")
         return df_renamed_merged
     except Exception as e:
         logging.error(msg=f"failed to create dim_counterparty dataframe due to error: {e}")
-        raise e
+        raise e(f"failed to create dim_counterparty dataframe due to error: {e}")
