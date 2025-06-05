@@ -52,7 +52,7 @@ def transform_counterparty(
         df_merged = pd.merge(
             counterparty,
             df_drop_address,
-            how="left",
+            how="inner",
             left_on="legal_address_id",
             right_on="address_id",
         )

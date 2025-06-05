@@ -19,7 +19,7 @@ def dummy_counterparty():
         {
             "counterparty_id": 2,
             "counterparty_legal_name": "Leannon, Predovic and Morar",
-            "legal_address_id": 28,
+            "legal_address_id": 20,
             "commercial_contact": "Melba Sanford",
             "delivery_contact": "Jean Hane III",
             "created_at": "2022-11-03 14:20:51.563000",
@@ -88,19 +88,9 @@ class TestTransformCounterparty:
                     "counterparty_legal_country": "Heard Island and McDonald Islands",
                     "counterparty_legal_phone_number": "9687 937447",
                 },
-                {
-                    "counterparty_id": 2,
-                    "counterparty_legal_name": "Leannon, Predovic and Morar",
-                    "counterparty_legal_address_line_1": "079 Horacio Landing",
-                    "counterparty_legal_address_line_2": None,
-                    "counterparty_legal_district": None,
-                    "counterparty_legal_city": "Utica",
-                    "counterparty_legal_postal_code": "93045",
-                    "counterparty_legal_country": "Austria",
-                    "counterparty_legal_phone_number": "7772 084705",
-                },
             ]
         )
+        print(result.to_string())
         assert_frame_equal(result, expected)
 
 class TestErrorHandling:
