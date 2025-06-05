@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 jobs:
   test_python:
     name: Test Python
@@ -50,7 +52,9 @@ jobs:
     name: Deploy Terraform 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4   
+        uses: actions/checkout@v4
+        # with:
+        #   ref: workflow-test
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
@@ -64,6 +68,10 @@ jobs:
       - name: Initialise Terraform
         working-directory: terraform
         run: terraform init
+
+      - name: Terraform Layers
+        working-directory: terraform
+        run: make terraform-layers-requirements
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan
