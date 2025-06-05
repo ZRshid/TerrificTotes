@@ -61,4 +61,4 @@ check-coverage:
 run-checks: security-test run-black unit-test check-coverage
 
 terraform-layers-requirements:
-	$(call execute_in_env, $(PIP) install requests -t ./terraform/package/python)
+	$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
