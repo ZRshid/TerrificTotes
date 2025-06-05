@@ -4,44 +4,47 @@ import boto3
 from unittest.mock import patch 
 from botocore.exceptions import BotoCoreError, ClientError
 
+# Test class for the upload_csv_to_zip_bucket function
 class Test_upload_csv_to_zip_bucket():
-
-    # I need to mock a client request to upload my file to my bucket
-    # I need to patch the client
+    
     @patch("boto3.client")
     def test_func_uploads_file_to_s3(self, mock_boto3_client):
+        # Mock the boto3 S3 client
         mock_s3 = mock_boto3_client.return_value
-        local_path = "Data/currency-codes.csv"
-        bucket_name = "zip-bucket"
-        s3_key = "s3_currency_codes.csv" # full path and filename of an object within a bucket
 
+        # Define test input values
+        local_path = "Data/currency-codes.csv"
+        bucket_name = "zip-bucket" 
+        s3_key = "s3_currency_codes.csv"  # Object key in the S3 bucket
+
+        # Call the function under test and capture the result
         result = upload_csv_to_zip_bucket(local_path, bucket_name, s3_key)
-        # https://docs.python.org/3/library/unittest.mock.html
-        #checks if the mock upload file has been called 
         
+        # Verify that the mocked upload_file method was called with the correct arguments
         mock_s3.upload_file.assert_called_with(local_path, bucket_name, s3_key)
-        
+
+         # Check that the function returns the expected success message
         assert result == "File has been uploaded in the zip bucket"
 
 
-    #https://boto3.amazonaws.com/v1/documentation/api/latest/guide/error-handling.html
+   
     @patch("boto3.client")
     def test_upload_csv_to_zip_bucket_error(self, mock_boto3_client):
+        # Mock the boto3 S3 client
         mock_s3 = mock_boto3_client.return_value
 
-        # fake client response
+        # Simulate a ClientError when upload_file is called
         error_response = {"Error": {"Message": "Upload failed"}}
         exception = ClientError(error_response, "UploadFile")
-
-    # Configure the mock to raise this error when upload_file is called
         mock_s3.upload_file.side_effect = exception
 
+        # Define test input values
         local_path = "Data/currency-codes.csv"
         bucket_name = "zip-bucket"
         s3_key = "s3_currency_codes.csv"
 
-    
+        # Call the function under test and capture the result
         result = upload_csv_to_zip_bucket(local_path, bucket_name, s3_key)
 
-        # Check that the error message is included in the result
+        # Verify that the error message is included in the function's output
         assert "Upload failed" in result
