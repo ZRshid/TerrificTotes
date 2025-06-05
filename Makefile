@@ -11,7 +11,7 @@ WD=$(shell pwd)
 PYTHONPATH=${WD}/python/
 SHELL := /bin/bash
 PROFILE = default
-PIP:=pip
+PIP := pip
 
 ## Create python interpreter environment.
 create-environment:
@@ -36,7 +36,6 @@ endef
 ## Build the environment requirements
 requirements: create-environment
 	$(call execute_in_env, $(PIP) install --upgrade pip)
-
 	$(call execute_in_env, $(PIP) install -r ./requirements.dev.txt)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
 
@@ -60,3 +59,6 @@ check-coverage:
 
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
+
+terraform-layers-requirements:
+	$(call execute_in_env, $(PIP) install requests -t ./terraform/package/python)

@@ -64,6 +64,10 @@ jobs:
       - name: Initialise Terraform
         working-directory: terraform
         run: terraform init
+
+      - name: Terraform Layers
+        working-directory: terraform 
+        run: make terraform-layers-requirements
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan
