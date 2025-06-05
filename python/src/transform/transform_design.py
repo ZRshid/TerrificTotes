@@ -1,4 +1,5 @@
 import pandas as pd
+import logging
 
 def transform_design(design:pd.DataFrame):
     
@@ -17,7 +18,8 @@ def transform_design(design:pd.DataFrame):
         df_set_index = df_ascending_order.set_index("design_id")
         return df_set_index
     except Exception as e:
-        raise e 
+        logging.error(msg=f"Failed to make the design datafram: {e}")
+        raise e
 
 
 
