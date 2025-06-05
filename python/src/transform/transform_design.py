@@ -10,7 +10,7 @@ def transform_design(design:pd.DataFrame):
     Returns:
         The transformed table 
     Raises:
-        Exception: If there is an error during the S3 upload.
+        Exception: If there is an error when tarnaforming the design table .
     """
     try:
         df_updated_design_table = design.drop(columns=["created_at", "last_updated"] , axis =1)
