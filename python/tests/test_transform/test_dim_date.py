@@ -74,7 +74,7 @@ class TestDimDate:
     
     def test_dataframe_is_not_empty(self, dummy_data):
         df_dim_date = dim_date(dummy_data)
-        assert df_dim_date.shape[0] > 0
+        assert df_dim_date.shape[0] == 5
     
     def test_dataframe_has_the_correct_columns(self, dummy_data):
         df_dim_date = dim_date(dummy_data)
