@@ -8,17 +8,14 @@ def transform_transaction(transaction: pd.DataFrame) -> pd.DataFrame:
     Args:
         transaction (pd.DataFrame): the original dataframe
 
-    Raises:
-        e: catches any error not caught
-
     Returns:
-        pd.DataFrame: a dim_transaction dataframe
+        pd.DataFrame: a dim_transaction dataframe, return columns named transaction_id, transaction_type, sales_order_id, purchase_order_id
     """
     try:
-        df_dropped = transaction.drop(["created_at", "last_updated"],
+        df_dim_transaction = transaction.drop(["created_at", "last_updated"],
                                         axis="columns",
                                         errors="ignore")
-        return df_dropped
+        return df_dim_transaction
     except Exception as e:
         logging.error(msg=f"fail to create dim_transaction due to error: {e}")
         raise e
