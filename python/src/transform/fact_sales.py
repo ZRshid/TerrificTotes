@@ -1,8 +1,10 @@
 import pandas as pd
 
-def sales_facts(df_sales_order: pd.DataFrame, df_dim_currency: pd.DataFrame, 
-                df_dim_design: pd.DataFrame, df_dim_date: pd.DataFrame, 
-                df_dim_location: pd.DataFrame, df_dim_staff: pd.DataFrame):
+def sales_facts(df_sales_order: pd.DataFrame, df_dim_counterparty: pd.DataFrame, 
+                df_dim_currency: pd.DataFrame,  df_dim_design: pd.DataFrame,
+                df_dim_date: pd.DataFrame, df_dim_location: pd.DataFrame,
+                df_dim_payment_type: pd.DataFrame, df_dim_staff: pd.DataFrame):
+                
     
     # create an empty df 
 

@@ -123,8 +123,95 @@ def dummy_dim_date():
         df_dim_date = pd.DataFrame(data)
         return df_dim_date
 
+@pytest.fixture()
+def dummy_dim_location():
+        data = [{"location_id":1,
+               "address_line_1":"6826 Herzog Via",
+               "address_line_2":None,
+               "district":"Avon",
+               "city":"New Patienceburgh",
+               "postal_code":"28441",
+               "country":"Turkey",
+               "phone":"1803 637401"},
+               {"location_id":2,
+                "address_line_1":"179 Alexie Cliffs",
+                "address_line_2":None,
+                "district":None,
+                "city":"Aliso Viejo",
+                "postal_code":"99305-7380",
+                "country":"San Marino",
+                "phone":"9621 880720"},
+                {"location_id":30,
+                 "address_line_1":"0336 Ruthe Heights",
+                 "address_line_2":None,
+                 "district":"Buckinghamshire",
+                 "city":"Lake Myrlfurt",
+                 "postal_code":"94545-4284",
+                 "country":"Falkland Islands (Malvinas)",
+                 "phone":"1083 286132"}
+                ]
+
+        df_dim_location = pd.DataFrame(data)
+        return df_dim_location
+
+@pytest.fixture()
+def dummy_dim_payment():
+        data = [ {"payment_type_id":1,
+               "payment_type_name":"SALES_RECEIPT"},
+               {"payment_type_id":2,
+               "payment_type_name":"SALES_REFUND"}
+              ]
+        
+        dummy_dim_payment = pd.DataFrame(data)
+        return dummy_dim_payment
+
+@pytest.fixture()
+def dummy_dim_counterparty():
+        data = [{"counterparty_id":1,
+                 "counterparty_legal_name":"Fahey and Sons",
+                 "counterparty_legal_address_line_1":"605 Haskell Trafficway",
+                 "counterparty_legal_address_line_2":"Axel Freeway",
+                 "counterparty_legal_district":None,
+                 "counterparty_legal_city":"East Bobbie",
+                 "counterparty_legal_postal_code":"88253-4257",
+                 "counterparty_legal_country":"Heard Island and McDonald Islands",
+                 "counterparty_legal_phone_number":"9687 937447"},
+                 {"counterparty_id":2,
+                  "counterparty_legal_name":"Leannon, Predovic and Morar",
+                  "counterparty_legal_address_line_1":"079 Horacio Landing",
+                  "counterparty_legal_address_line_2":None,
+                  "counterparty_legal_district":None,
+                  "counterparty_legal_city":"Utica",
+                  "counterparty_legal_postal_code":"93045",
+                  "counterparty_legal_country":"Austria",
+                  "counterparty_legal_phone_number":"7772 084705"}
+               ]
+        
+        dummy_dim_counterparty = pd.DataFrame(data)
+        return dummy_dim_counterparty
+
+@pytest.fixture()
+def dummy_dim_staff():
+        data = [{"staff_id":1,
+                 "first_name":"Jeremie",
+                 "last_name":"Franey",
+                 "email_address":"jeremie.franey@terrifictotes.com",
+                 "location":"Manchester2",
+                 "department_name":"Purchasing"},
+                {"staff_id":2,
+                 "first_name":"Deron",
+                 "last_name":"Beier",
+                 "email_address":"deron.beier@terrifictotes.com",
+                 "location":"Leeds",
+                 "department_name":"distribution"}
+               ]
+        
+        dummy_dim_staff = pd.DataFrame(data)
+        return dummy_dim_staff
+
 class TestSales_facts:
     def test_function_returns_a_dataframe(self, 
-            dummy_sales_order, dummy_dim_currency, dummy_dim_design, 
-            dummy_dim_date):
+            dummy_sales_order, dummy_dim_counterparty, dummy_dim_currency, 
+            dummy_dim_design, dummy_dim_date, dummy_dim_location, 
+            dummy_dim_payment, dummy_dim_staff):
         pass
