@@ -21,17 +21,9 @@ class Test_Load_Currency_Codes():
         columns = result_df.columns.to_list()
         
         assert "currency_code" in columns
-        assert "currency_name" in columns 
-
-    def test_func_returns_df(self):
-        df = pd.DataFrame 
-        file = "../Data/Currency-codes.csv"
-        headers_csv = ["currency_code", "currency_name"]
-        result_df = load_currency_codes(file, headers_csv)
-        columns = result_df.columns.to_list()
-
+        assert "currency_name" in columns
         assert "currency_id" in columns 
-
+        
 
     @patch("awswrangler.s3.read_csv")
     def test_func_loads_codes_from_s3(self, mock_read_csv):
