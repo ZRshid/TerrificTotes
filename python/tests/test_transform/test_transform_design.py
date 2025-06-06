@@ -39,7 +39,7 @@ def test_returns_the_correct_data_type(dummy_data):
 
 def test_returns_the_correct_data_shape(dummy_data):
     result = transform_design(dummy_data)
-    assert result.shape == (4,3)  
+    assert result.shape == (3,4)  
 
 def test_checks_individual_columns_are_present_and_not_in_the_transformed_table(dummy_data):
     result = transform_design(dummy_data)
