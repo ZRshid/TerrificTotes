@@ -59,12 +59,3 @@ def test_handles_empty_inputs(dummy_data):
   empty_df = dummy_data.iloc[0:0]  
   result = transform_design(empty_df)
   assert result.empty
-
-   
- 
-   
-  
-    
-
-
-   

@@ -1,4 +1,4 @@
-from python.src.transform.load_currency import load_currency_codes, load_currency_codes_from_s3
+from src.transform.load_currency import load_currency_codes, load_currency_codes_from_s3
 import pandas as pd  
 import pytest 
 from unittest.mock import patch
