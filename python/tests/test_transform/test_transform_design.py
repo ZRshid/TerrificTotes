@@ -39,20 +39,21 @@ def test_returns_the_correct_data_type(dummy_data):
 
 def test_returns_the_correct_data_shape(dummy_data):
     result = transform_design(dummy_data)
-    assert result.shape == (3,3)  
+    assert result.shape == (4,3)  
 
 def test_checks_individual_columns_are_present_and_not_in_the_transformed_table(dummy_data):
     result = transform_design(dummy_data)
     assert "design_name" in result
     assert "file_location" in result
     assert "file_name" in result
+    assert "design_id" in result
     
     assert "created_at" not in result
     assert "last_updated" not in result
     
 def test_returns_the_data_in_ascending_order(dummy_data):
     result = transform_design(dummy_data)
-    assert result.index.is_monotonic_increasing
+    assert result["design_id"].is_monotonic_increasing
     
 def test_handles_empty_inputs(dummy_data):
   empty_df = dummy_data.iloc[0:0]  
