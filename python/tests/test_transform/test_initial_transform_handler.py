@@ -1,4 +1,5 @@
-from src.transform.initial_transform_handler import lambda_handler, location
+from src.transform.initial_transform_handler import lambda_handler, transform_table
+from src.transform.transform_location import transform_location
 import pytest
 import boto3
 from moto import mock_aws
@@ -122,13 +123,29 @@ class TestTransformHandler:
     def test_transform_handler_fails(self):
         pass
 
-class TestLocationTable:
+# class TestLocationTable:
+#     def test_returns_dataframe(self, s3_with_bucket, event):
+#         transformed_tables = []
+#         response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
+#         assert isinstance(response, pd.DataFrame)
+
+#     def test_added_to_transformed_tables(self, s3_with_bucket, event):
+#         transformed_tables = []
+#         response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
+#         assert "dim_location" in transformed_tables
+
+
+class TestTransform_Table:
     def test_returns_dataframe(self, s3_with_bucket, event):
+        table = "address"
+        transforms = {"address":transform_location}
         transformed_tables = []
-        response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
+        response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
         assert isinstance(response, pd.DataFrame)
 
     def test_added_to_transformed_tables(self, s3_with_bucket, event):
+        table = "address"
+        transforms = {"address":transform_location}
         transformed_tables = []
-        response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
-        assert "dim_location" in transformed_tables
+        response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
+        assert table in transformed_tables
