@@ -58,10 +58,12 @@ jobs:
         # with:
         # ref: ${{ github.ref }}
         #   ref: workflow-test
-      - name: Branch
-        run: cat Makefile
+              # put python path into enviroment var:
+      - name: Set Python Path
+        run: |
+          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
       - name: Terraform Layers
-        working-directory: terraform
+        # working-directory: terraform
         run: make tlr
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
