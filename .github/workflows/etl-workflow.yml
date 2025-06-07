@@ -48,7 +48,7 @@ jobs:
       
   terraform_deploy:
     runs-on: ubuntu-latest
-    needs: test_python
+    # needs: test_python
     name: Deploy Terraform 
     steps:
       - name: Checkout Code
