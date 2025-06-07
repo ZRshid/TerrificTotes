@@ -3,21 +3,30 @@ import pandas as pd
 import pytest 
 from unittest.mock import patch
 import awswrangler as wr
+import os
+
+@pytest.fixture
+def filepath():
+    cwd = os.getcwd()
+    if cwd.endswith("python"):
+        cwd = cwd[:-7]
+    return cwd+"/Data/Currency-codes.csv"
 
 class Test_Load_Currency_Codes():
     
-    def test_func_return_df(self):
-        df = pd.DataFrame 
-        file = "../Data/Currency-codes.csv"
+    def test_func_return_df(self,filepath):
+        df = pd.DataFrame
+        print(os.getcwd())
+
         headers = ["currency_code", "currency_name"]
-        result = load_currency_codes(file, headers)
+        result = load_currency_codes(filepath, headers)
         assert isinstance(result, pd.DataFrame)
 
-    def test_func_returns_df_with_right_columns_names(self):
+    def test_func_returns_df_with_right_columns_names(self,filepath):
         df = pd.DataFrame 
-        file = "../Data/Currency-codes.csv"
+        
         headers_csv = ["currency_code", "currency_name"]
-        result_df = load_currency_codes(file, headers_csv)
+        result_df = load_currency_codes(filepath, headers_csv)
         columns = result_df.columns.to_list()
         
         assert "currency_code" in columns
