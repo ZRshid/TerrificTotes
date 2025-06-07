@@ -52,9 +52,9 @@ jobs:
     name: Deploy Terraform 
     steps:
       - name: Branch
-        uses: echo ${{ github.ref }}
+        run: echo ${{ github.ref }}
       - name: Checkout Code
-        run: actions/checkout@v4    
+        uses: actions/checkout@v4    
         # with:
         # ref: ${{ github.ref }}
         #   ref: workflow-test
