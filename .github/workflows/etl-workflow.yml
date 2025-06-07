@@ -78,9 +78,6 @@ jobs:
       - name: Initialise Terraform
         working-directory: terraform
         run: terraform init
-      - name: pwd
-        working-directory: terraform
-        run: ls
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan

@@ -62,8 +62,8 @@ check-coverage:
 run-checks: security-test run-black unit-test check-coverage
 
 
-REQUESTS := pip install --upgrade requests -t ${WD}/Terraform/package/python
-LS = ls ${WD}/Terraform/package/python
+REQUESTS := pip install --upgrade requests -t ${WD}/terraform/package/python
+LS = ls ${WD}/terraform/package/python
 terraform-layers-requirements:
 	$(REQUESTS)
 	$(LS)
