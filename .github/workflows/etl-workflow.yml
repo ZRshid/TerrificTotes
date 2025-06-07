@@ -80,7 +80,7 @@ jobs:
         run: terraform init
       - name: pwd
         working-directory: terraform
-        run: pwd
+        run: ls
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan
