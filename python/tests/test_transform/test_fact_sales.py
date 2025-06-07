@@ -154,16 +154,6 @@ def dummy_dim_location():
         df_dim_location = pd.DataFrame(data)
         return df_dim_location
 
-@pytest.fixture()
-def dummy_dim_payment():
-        data = [ {"payment_type_id":1,
-               "payment_type_name":"SALES_RECEIPT"},
-               {"payment_type_id":2,
-               "payment_type_name":"SALES_REFUND"}
-              ]
-        
-        dummy_dim_payment = pd.DataFrame(data)
-        return dummy_dim_payment
 
 @pytest.fixture()
 def dummy_dim_counterparty():
@@ -210,8 +200,32 @@ def dummy_dim_staff():
         return dummy_dim_staff
 
 class TestSales_facts:
-    def test_function_returns_a_dataframe(self, 
-            dummy_sales_order, dummy_dim_counterparty, dummy_dim_currency, 
-            dummy_dim_design, dummy_dim_date, dummy_dim_location, 
-            dummy_dim_payment, dummy_dim_staff):
-        pass
+        def test_function_returns_a_dataframe(self, 
+        dummy_sales_order, dummy_dim_counterparty, dummy_dim_currency, 
+        dummy_dim_design, dummy_dim_date, dummy_dim_location, 
+        dummy_dim_staff):
+       
+        
+                df_sales_facts = sales_facts(dummy_sales_order, dummy_dim_counterparty, 
+                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
+                        dummy_dim_location, dummy_dim_staff)
+                assert isinstance(df_sales_facts,pd.DataFrame)
+
+
+        def test_dataframe_has_the_correct_columns(self, dummy_sales_order, dummy_dim_counterparty, 
+                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
+                        dummy_dim_location, dummy_dim_staff):
+                
+        
+                expected_columns = ["sales_record_id", "sales_order_id", "created_date", "created_time", 
+                                    "last_updated_date", "last_updated_time", "sales_staff_id", "counterparty_id",
+                                    "units_sold", "unit_price", "currency_id", "design_id", "agreed_payment_date",
+                                    "agreed_delivery_date", "agreed_delivery_location_id"]
+                
+                df_sales_facts = sales_facts(dummy_sales_order, dummy_dim_counterparty, 
+                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
+                        dummy_dim_location, dummy_dim_staff)
+               
+                assert list(df_sales_facts.columns) == expected_columns
+
+        
