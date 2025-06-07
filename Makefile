@@ -64,5 +64,5 @@ run-checks: security-test run-black unit-test check-coverage
 
 
 tlr:
-	@echo ${WD}/terraform/package/python
+	@echo "this exists"
 ##$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
