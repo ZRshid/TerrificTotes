@@ -66,4 +66,4 @@ run-checks: security-test run-black unit-test check-coverage
 terraform-layers-requirements:
 	@echo ${WD}/terraform/package/python
 	@echo ${PYTHONPATH}
-	$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
+	$($(PIP) install requests -t ${WD}/terraform/package/python)
