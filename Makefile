@@ -67,3 +67,4 @@ terraform-layers-requirements:
 	@echo ${WD}/terraform/package/python
 	@echo ${PYTHONPATH}
 	$($(PIP) install requests -t ${WD}/terraform/package/python)
+	ls ${WD}/terraform/package/python
