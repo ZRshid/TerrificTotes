@@ -154,7 +154,6 @@ def dummy_dim_location():
         df_dim_location = pd.DataFrame(data)
         return df_dim_location
 
-
 @pytest.fixture()
 def dummy_dim_counterparty():
         data = [{"counterparty_id":1,
@@ -200,32 +199,33 @@ def dummy_dim_staff():
         return dummy_dim_staff
 
 class TestSales_facts:
-        def test_function_returns_a_dataframe(self, 
-        dummy_sales_order, dummy_dim_counterparty, dummy_dim_currency, 
-        dummy_dim_design, dummy_dim_date, dummy_dim_location, 
-        dummy_dim_staff):
-       
+    def test_function_returns_a_dataframe(self, dummy_sales_order):
         
-                df_sales_facts = sales_facts(dummy_sales_order, dummy_dim_counterparty, 
-                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
-                        dummy_dim_location, dummy_dim_staff)
-                assert isinstance(df_sales_facts,pd.DataFrame)
+        df_sales_facts = sales_facts(dummy_sales_order)
+        assert isinstance(df_sales_facts,pd.DataFrame)
 
 
-        def test_dataframe_has_the_correct_columns(self, dummy_sales_order, dummy_dim_counterparty, 
-                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
-                        dummy_dim_location, dummy_dim_staff):
+    def test_dataframe_has_the_correct_columns(self, dummy_sales_order):
+        
+        expected_columns = ["sales_record_id", "sales_order_id", "created_date", "created_time", 
+                            "last_updated_date", "last_updated_time", "sales_staff_id", "counterparty_id",
+                            "units_sold", "unit_price", "currency_id", "design_id", "agreed_payment_date",
+                            "agreed_delivery_date", "agreed_delivery_location_id"]
                 
-        
-                expected_columns = ["sales_record_id", "sales_order_id", "created_date", "created_time", 
-                                    "last_updated_date", "last_updated_time", "sales_staff_id", "counterparty_id",
-                                    "units_sold", "unit_price", "currency_id", "design_id", "agreed_payment_date",
-                                    "agreed_delivery_date", "agreed_delivery_location_id"]
-                
-                df_sales_facts = sales_facts(dummy_sales_order, dummy_dim_counterparty, 
-                        dummy_dim_currency, dummy_dim_design, dummy_dim_date, 
-                        dummy_dim_location, dummy_dim_staff)
-               
-                assert list(df_sales_facts.columns) == expected_columns
+        df_sales_facts = sales_facts(dummy_sales_order)
 
-        
+        assert list(df_sales_facts.columns) == expected_columns
+    
+    def test_dataframe_has_the_correct_number_of_rows(self, dummy_sales_order):
+        df_sales_facts = sales_facts(dummy_sales_order)
+
+        assert df_sales_facts.shape[0] == 4
+
+    def test_dataframe_has_the_correct_number_of_columns(self, dummy_sales_order):
+        df_sales_facts = sales_facts(dummy_sales_order)
+
+        assert df_sales_facts.shape[1] == 15
+
+    def test_function_returns_an_error_when_table_is_not_generated(self, dummy_sales_order):
+        with pytest.raises(Exception):
+            sales_facts([dummy_sales_order])
