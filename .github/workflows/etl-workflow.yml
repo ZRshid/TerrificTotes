@@ -54,7 +54,7 @@ jobs:
       - name: Branch
         uses: echo ${{ github.ref }}
       - name: Checkout Code
-        uses: actions/checkout@v4    
+        run: actions/checkout@v4    
         # with:
         # ref: ${{ github.ref }}
         #   ref: workflow-test
