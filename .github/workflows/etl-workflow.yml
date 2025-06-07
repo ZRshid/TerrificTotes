@@ -53,6 +53,8 @@ jobs:
     steps:
       - name: Branch
         run: echo ${{ github.ref }}
+      - name: Branch
+        run: cat Makefile
       - name: Checkout Code
         uses: actions/checkout@v4    
         # with:
