@@ -55,6 +55,9 @@ jobs:
         uses: actions/checkout@v4
         # with:
         #   ref: workflow-test
+      - name: Terraform Layers
+        working-directory: terraform
+        run: make terraform-layers-requirements
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
@@ -68,11 +71,6 @@ jobs:
       - name: Initialise Terraform
         working-directory: terraform
         run: terraform init
-      - name: echo
-        run: make echo-version
-      - name: Terraform Layers
-        working-directory: terraform
-        run: make terraform-layers-requirements
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan

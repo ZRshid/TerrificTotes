@@ -61,9 +61,8 @@ check-coverage:
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
 
-echo-version:
-	@echo "make file version 2.1" 
 
 
 terraform-layers-requirements:
-	$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
+	@echo ${WD}/terraform/package/python
+##$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
