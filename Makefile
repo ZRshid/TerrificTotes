@@ -12,7 +12,7 @@ PYTHONPATH=${WD}/python/
 SHELL := /bin/bash
 PROFILE = default
 PIP := pip
-PIP := pip
+
 
 ## Create python interpreter environment.
 create-environment:
@@ -62,9 +62,11 @@ check-coverage:
 run-checks: security-test run-black unit-test check-coverage
 
 
-
+REQUESTS := pip install --upgrade requests -t ${WD}/Terraform/package/python
+LS = ls ${WD}/Terraform/package/python
 terraform-layers-requirements:
-	@echo ${WD}/terraform/package/python
-	@echo ${PYTHONPATH}
-	$($(PIP) install requests -t ${WD}/terraform/package/python)
-	$(ls ${WD}/terraform/package/python)
+	$(REQUESTS)
+	$(LS)
+	
+
+	
