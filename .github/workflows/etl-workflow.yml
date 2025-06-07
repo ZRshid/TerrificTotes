@@ -9,42 +9,42 @@ on:
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 jobs:
-  # test_python:
-  #   name: Test Python
-  #   runs-on: ubuntu-latest
-
-  #   permissions:
-  #     contents: read
-  #   steps:
-  #     - name: Checkout Repo
-  #       uses: actions/checkout@v4
+  test_python:
+    name: Test Python
+    runs-on: ubuntu-latest
+    if: false
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
       
-  #     - run: echo "Beginning tests"
+      - run: echo "Beginning tests"
       
-  #     - name: Set Up Python
-  #       uses: actions/setup-python@v5
-  #       with: 
-  #         python-version: '3.12'
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: '3.12'
 
-  #       # put python path into enviroment var:
-  #     - name: Set Python Path
-  #       run: |
-  #         echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
+        # put python path into enviroment var:
+      - name: Set Python Path
+        run: |
+          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
         
-  #     - name: Install Dependencies
-  #       run: make requirements
+      - name: Install Dependencies
+        run: make requirements
       
-  #     - name: Security Checks
-  #       run: make security-test
+      - name: Security Checks
+        run: make security-test
 
-  #     - name: Black Code Style Checks
-  #       run: make run-black
+      - name: Black Code Style Checks
+        run: make run-black
 
-  #     - name: Test Python Files
-  #       run: make unit-test
+      - name: Test Python Files
+        run: make unit-test
 
-  #     - name: Check Test Coverage
-  #       run: make check-coverage
+      - name: Check Test Coverage
+        run: make check-coverage
       
   terraform_deploy:
     runs-on: ubuntu-latest
@@ -57,7 +57,7 @@ jobs:
         #   ref: workflow-test
       - name: Terraform Layers
         working-directory: terraform
-        run: make terraform-layers-requirements
+        run: make tlr
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
