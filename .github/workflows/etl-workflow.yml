@@ -51,11 +51,12 @@ jobs:
     # needs: test_python
     name: Deploy Terraform 
     steps:
+      - name: Branch
+        uses: echo ${{ github.ref }}
       - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
+        uses: actions/checkout@v4    
         # with:
+        # ref: ${{ github.ref }}
         #   ref: workflow-test
       - name: Terraform Layers
         working-directory: terraform
