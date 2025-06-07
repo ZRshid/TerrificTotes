@@ -64,7 +64,7 @@ jobs:
           echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
       - name: Terraform Layers
         # working-directory: terraform
-        run: make tlr
+        run: make terraform-layers-requirements
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
