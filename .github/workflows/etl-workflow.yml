@@ -55,15 +55,11 @@ jobs:
         run: echo ${{ github.ref }}
       - name: Checkout Code
         uses: actions/checkout@v4    
-        # with:
-        # ref: ${{ github.ref }}
-        #   ref: workflow-test
       # put python path into enviroment var:
-      - name: Set Python Path
-        run: |
-          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
-      - name: Terraform Layers
-        # working-directory: terraform
+      # - name: Set Python Path
+      #   run: |
+      #     echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
+      - name: Install Terraform Layers Requirements
         run: make terraform-layers-requirements
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
