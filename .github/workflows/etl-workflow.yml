@@ -12,7 +12,6 @@ jobs:
   test_python:
     name: Test Python
     runs-on: ubuntu-latest
-    if: false
     permissions:
       contents: read
     steps:
@@ -48,17 +47,13 @@ jobs:
       
   terraform_deploy:
     runs-on: ubuntu-latest
-    # needs: test_python
+    needs: test_python
     name: Deploy Terraform 
     steps:
       - name: Branch
         run: echo ${{ github.ref }}
       - name: Checkout Code
         uses: actions/checkout@v4    
-      # put python path into enviroment var:
-      # - name: Set Python Path
-      #   run: |
-      #     echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
       - name: Install Terraform Layers Requirements
         run: make terraform-layers-requirements
       - name: Configure AWS Credentials
