@@ -58,11 +58,10 @@ unit-test:
 check-coverage:
 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=python/src/ --cov=python/utils)
 
-## Run all checks
-run-checks: security-test run-black unit-test check-coverage
-
-
 
 tlr:
 	@echo "this exists"
 ##$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
+
+## Run all checks
+run-checks: security-test run-black unit-test check-coverage
