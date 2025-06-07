@@ -12,6 +12,7 @@ PYTHONPATH=${WD}/python/
 SHELL := /bin/bash
 PROFILE = default
 PIP := pip
+PIP := pip
 
 ## Create python interpreter environment.
 create-environment:
