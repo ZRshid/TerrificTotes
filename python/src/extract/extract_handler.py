@@ -27,7 +27,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
     from_time = event["from_time"]
     to_time = event["to_time"]
     raw_data_bucket = event["raw_data_bucket"]
-    timestamp = to_time[:-2]
+    timestamp = to_time #[:-3]
     # take the table from the event list
     tables = []
     try:
@@ -64,7 +64,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
     logging.info(message)
 
     # return list of tables
-    return {"tables": tables}
+    return {"tables": tables,"timestamp":timestamp}
 
 
 if __name__ == "__main__":
