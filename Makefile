@@ -15,6 +15,7 @@ PIP := pip
 
 ## Create python interpreter environment.
 create-environment:
+	@echo "make file version 2" 
 	@echo ">>> About to create environment: $(PROJECT_NAME)..."
 	@echo ">>> check python3 version"
 	( \
