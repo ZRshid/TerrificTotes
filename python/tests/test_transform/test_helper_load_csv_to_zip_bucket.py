@@ -1,4 +1,4 @@
-from src.transform.helper_upload_csv_to_zip_bucket import upload_csv_to_zip_bucket
+from src.transform.helper_upload_csv_to_zip_bucket import upload_csv_to_zip_bucket, main, sys
 import pytest
 import boto3
 from unittest.mock import patch 
@@ -48,3 +48,31 @@ class Test_upload_csv_to_zip_bucket():
 
         # Verify that the error message is included in the function's output
         assert "Upload failed" in result
+
+class TestMain():
+
+    def test_main_raise_typeerror_without_args(self):
+        
+        args = ()
+        with pytest.raises(TypeError) as e:
+            main(*args)
+    @patch("boto3.client")       
+    def test_main_exits_with_code_0(self,boto3):
+        local_path = ""
+        bucket_name = ""
+        s3_key = ""
+        with pytest.raises(SystemExit) as e:
+            main(local_path,bucket_name,s3_key)
+            assert e.type == SystemExit
+            assert e.value.code == 0
+    @patch("src.transform.helper_upload_csv_to_zip_bucket.boto3.client") 
+    def test_main_exits_with_code_1_with_fail(self,s3):
+        local_path = ""
+        bucket_name = ""
+        s3_key = ""
+        s3().upload_file.side_effect = BotoCoreError()
+        with pytest.raises(SystemExit) as e:
+            main(local_path,bucket_name,s3_key)
+        assert e.type == SystemExit
+        assert e.value.code == 1
+            
