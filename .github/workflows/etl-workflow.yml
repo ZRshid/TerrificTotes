@@ -30,12 +30,6 @@ jobs:
         
       - name: Install Dependencies
         run: make requirements
-      
-      - name: Temporarily save venv for next job #(so don't have to install again. is this quicker)
-        uses: actions/upload-artifact@v4
-        with:
-          name: venv-artifact
-          path: venv/
 
       - name: Security Checks
         run: make security-test
@@ -70,4 +64,6 @@ jobs:
       #   working-directory: terraform
       #   run: terraform apply -auto-approve
       - name: upload currencies
-        run: python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv zip-bucket test.csv
+        run: |
+          source venv/bin/activate
+          python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv zip-bucket test.csv
