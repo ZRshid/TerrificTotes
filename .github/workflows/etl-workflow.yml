@@ -66,4 +66,4 @@ jobs:
       - name: upload currencies
         run: |
           source venv/bin/activate
-          python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv zip-bucket test.csv
+          python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv tt-zip-bucket currency-codes.csv
