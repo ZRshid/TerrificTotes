@@ -66,7 +66,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
     logging.info(message)
 
     # return list of tables
-    return {"tables": tables}
+    return {"timestamp": timestamp,"tables": tables}
 
 
 if __name__ == "__main__":
