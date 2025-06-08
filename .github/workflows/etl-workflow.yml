@@ -6,8 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 jobs:
   test_python:
     name: Test Python
@@ -28,11 +26,17 @@ jobs:
         # put python path into enviroment var:
       - name: Set Python Path
         run: |
-          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
+          echo "{PYTHONPATH}=${{ github.workspace }}/python" >> "$GITHUB_ENV"
         
       - name: Install Dependencies
         run: make requirements
       
+      - name: Temporarily save venv for next job #(so don't have to install again. is this quicker)
+        uses: actions/upload-artifact@v2
+        with:
+          name: venv-artifact
+          path: venv
+
       - name: Security Checks
         run: make security-test
 
@@ -75,3 +79,20 @@ jobs:
       # - name: Apply Terraform
       #   working-directory: terraform
       #   run: terraform apply -auto-approve
+      #python again:
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with: 
+          python-version: '3.12'
+      - name: Retrieve saved venv
+        uses: actions/download-artifact@v2
+        with:
+          name: venv-artifact
+          path: venv
+      - name: Set Python Path
+        run: |
+          echo "{PYTHONPATH}=${{ github.workspace }}/python" >> "$GITHUB_ENV"
+      - name: upload currencies
+        run: |
+          source venv/bin/activate
+          python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv zip-bucket test.csv
