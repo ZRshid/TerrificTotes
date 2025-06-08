@@ -61,5 +61,3 @@ def query_db(query: str, conn: Connection) -> tuple:
     except InterfaceError as i:
         logging.error(f"error interfacing to database: {i}")
         raise InterfaceError
-    finally:
-        close_db(conn)
