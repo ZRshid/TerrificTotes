@@ -39,7 +39,7 @@ def lambda_handler(event, context):
     """
     try:
         s3 = boto3.client("s3")
-        transformed_tables = {}  # dictionart to contain the transformed dataframes
+        transformed_tables = {}  # dictionary to contain the transformed dataframes
 
         # get timestamp from event or use current time
         timestamp = event.get(
@@ -47,7 +47,7 @@ def lambda_handler(event, context):
         )
 
         # transform tables given in the event
-        transformed_tables = transform_tables(event["tables"], s3)
+        transformed_tables = transform_tables(event["tables"], s3, timestamp)
 
         # save all transformed all tables:
         for table_name, df_table in transformed_tables.items():
@@ -57,16 +57,6 @@ def lambda_handler(event, context):
         raise e
 
     return {"transformed_tables": transformed_tables.keys(), "timestamp": timestamp}
-
-
-"""todo: 
-        finish loading dimensions
-        TESTS - don't need to test functions from other files - have already been tested
-        change extract handler to return a timestamp & file name
-        make key from table name and time stamp - test
-        change function to use keys and bucket dynamically
-        save to parquet with correct key
-"""
 
 
 def make_key(table: str, timestamp: str) -> str:
@@ -113,7 +103,7 @@ def transform_table(
 
     Args:
         table_name (str): the table
-        s3 (_type_): context
+        s3 (client): context
         raw_bucket (str): the bucket
         key_address (str): the file
         transform (function): how to transform
@@ -131,12 +121,12 @@ def transform_table(
 
 
 def transform_tables(tables: list, s3, timestamp: str) -> dict:
-    """Transform all the tables in the list (assuming they are in this fucntion)
+    """Transform all the tables in the list (assuming they are in this function)
 
     Args:
         tables (list): list of tables
-        s3 (_type_): an S3
-        timestamp (str_): When the extract happened
+        s3 (client): an S3
+        timestamp (str): When the extract happened
 
     Raises:
         ValueError: if one of the secondary tables is missing
@@ -202,13 +192,13 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         else:
             raise ValueError("department table missing unable to transform staff table")
 
-    if "currency" in tables:
-        key = make_key("currency", timestamp)
-        transformed_tables["dim_currency"] = load_currency_codes_from_s3(
-            ["currency_code", "currency_name"]
-        )
-    if "date" in tables:
-        transformed_tables["dim_dates"] = create_dim_date(INITIAL_DATE, FUTURE_DATE)
+    # if "currency" in tables:
+    key = make_key("currency", timestamp)
+    transformed_tables["dim_currency"] = load_currency_codes_from_s3(
+        ["currency_code", "currency_name"]
+    )
+    # if "date" in tables:
+    transformed_tables["dim_dates"] = create_dim_date(INITIAL_DATE, FUTURE_DATE)
 
     # dataframe for fact table
     if "sales" in tables:
