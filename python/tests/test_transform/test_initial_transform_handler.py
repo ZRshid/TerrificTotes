@@ -1,11 +1,12 @@
-from src.transform.initial_transform_handler import lambda_handler, transform_table
+from src.transform.transform_counterparty import transform_counterparty
+from src.transform.initial_transform_handler import lambda_handler, make_key, transform_table, transform_tables,transform_and_combine
 from src.transform.transform_location import transform_location
 import pytest
 import boto3
 from moto import mock_aws
 import pandas as pd
 import os
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 from pandas.testing import assert_frame_equal
 
 TEST_BUCKET = 'test-bucket'
@@ -78,45 +79,88 @@ def s3_with_bucket(s3):
 def event():
     return {"tables" : ["address", "counterparty"]}                
 
-
 class TestTransformHandler:
-    def test_lambda_handler_returns_dict(self):
-        pass
-
-    def test_dict_contains_keys(self):
-        expected_keys = ["transformed_tables","timestamp"]
+    @patch("src.transform.initial_transform_handler.transform_tables")
+    def test_lambda_handler_returns_dict(self,t_tables,event):
+        t_tables.return_value = {}
+        result = lambda_handler(event,{})
+        assert isinstance(result,dict)
         
-        pass
+    @patch("src.transform.initial_transform_handler.transform_tables")
+    def test_dict_contains_keys(self,t_tables,event):
+        t_tables.return_value = {}
+        expected_keys = ["transformed_tables","timestamp"]
+        result = lambda_handler(event,{})
+        assert expected_keys[0] in result
+        assert expected_keys[1] in result
+        
 
-
-    def test_transform_raises(self):
+    @patch("src.transform.initial_transform_handler.transform_tables")
+    def test_transform_raises(self,t_tables,event):
        ##put in logs make, sure still raises
+       t_tables.return_value = {}
        with pytest.raises(Exception) as e:
-           ...
+            result = lambda_handler({},{})
 
-class TestTransform_Table:
+
+class TestTransform_table:
     def test_returns_dataframe(self, s3_with_bucket, event):
         table = "address"
         transforms = {"address":transform_location}
-        transformed_tables = []
-        response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
+        response = transform_table("address", s3_with_bucket, TEST_BUCKET, TEST_KEY,transforms['address'])
         assert isinstance(response, pd.DataFrame)
 
-    def test_added_to_transformed_tables(self, s3_with_bucket, event):
-        table = "address"
-        transforms = {"address":transform_location}
-        transformed_tables = []
-        response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
-        assert table in transformed_tables
+class TestTransform_and_combine:
+    @patch("src.transform.initial_transform_handler.load_json")
+    def test_returns_dataframe(self,load_json, s3_with_bucket, event):
+        table = "counterparty"
+        transforms = Mock()
+        transforms.return_value = pd.DataFrame() 
+        secondary = pd.DataFrame()
+        response = transform_and_combine(table, s3_with_bucket, TEST_BUCKET, TEST_KEY,"second_key",secondary,transforms)
+        assert isinstance(response, pd.DataFrame)
 
-class TestOther:
-    ...
+class TestTransform_tables:
+    @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.transform_table")
+    def test_returns_dict(self,counterparty,t_table,event):
+        counterparty.return_value = pd.DataFrame()
+        t_table.return_value = pd.DataFrame()
+        timestamp = '2025-06-03 08:08:48.01'
+        tables = event['tables']
+        result = transform_tables(tables,"s3",timestamp)
+        assert isinstance(result,dict)
+    @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.transform_table")
+    def test_returns_all_tables(self,counterparty,t_table,event):
+        counterparty.return_value = pd.DataFrame()
+        t_table.return_value = pd.DataFrame()
+        timestamp = '2025-06-03 08:08:48.01'
+        tables = event['tables']
+        result = transform_tables(tables,"s3",timestamp)
+        
+        assert "dim_counterparty" in result
+        assert "dim_location" in result
+    @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.transform_table")
+    def test_dict_values_is_dataframe(self,counterparty,t_table,event):
+        counterparty.return_value = pd.DataFrame()
+        t_table.return_value = pd.DataFrame()
+        timestamp = '2025-06-03 08:08:48.01'
+        tables = event['tables']
+        result = transform_tables(tables,"s3",timestamp = '2025-06-03 08:08:48.01')
+        
+        assert isinstance(result["dim_counterparty"],pd.DataFrame)
+        
+
 
 class TestMake_key:
-    def test_key_is_string():
-        assert isinstance(Make_key("table","2025"),str)
-    def test_key_matches_expected():
+    def test_key_is_string(self):
+        assert isinstance(make_key("table","2025"),str)
+    def test_key_matches_expected(self):
         table = 'design'
-        timestamp = '2025-05-05 23:11:23:48.01'
-        expected = ??
+        timestamp = '2025-06-03 08:08:48.01'
+        key_design = "2025-06-03_08:08/design:2025-06-03_08:08:48.json"
+       
+        assert make_key(table,timestamp) == key_design
         
