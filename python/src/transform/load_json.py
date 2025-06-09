@@ -27,6 +27,7 @@ def load_json(bucket: str, key: str, table: str, s3) -> pd.DataFrame:
         object = s3.get_object(Bucket=bucket, Key=key)
         content = object.get("Body").read().decode("utf-8")
         data = json.loads(content)
+        
         df = pd.DataFrame(data[table])
         return df
     except Exception as e:
