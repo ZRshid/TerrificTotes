@@ -1,4 +1,4 @@
-from src.transform.helper_upload_csv_to_zip_bucket import upload_csv_to_zip_bucket, main, sys
+from src.transform.helper_upload_csv_to_zip_bucket import upload_csv_to_zip_bucket, main
 import pytest
 import boto3
 from unittest.mock import patch 
