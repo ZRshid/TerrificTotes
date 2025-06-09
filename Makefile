@@ -13,9 +13,9 @@ SHELL := /bin/bash
 PROFILE = default
 PIP := pip
 
+
 ## Create python interpreter environment.
 create-environment:
-	@echo "make file version 2" 
 	@echo ">>> About to create environment: $(PROJECT_NAME)..."
 	@echo ">>> check python3 version"
 	( \
@@ -61,5 +61,12 @@ check-coverage:
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
 
+
+REQUESTS := pip install --upgrade requests -t ${WD}/terraform/package/python
+LS = ls ${WD}/terraform/package/python
 terraform-layers-requirements:
-	$(call execute_in_env, $(PIP) install requests -t ${WD}/terraform/package/python)
+	$(REQUESTS)
+	$(LS)
+	
+
+	
