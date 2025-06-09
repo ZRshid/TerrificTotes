@@ -59,3 +59,10 @@ def test_handles_empty_inputs(dummy_data):
   empty_df = dummy_data.iloc[0:0]  
   result = transform_design(empty_df)
   assert result.empty
+
+def test_transform_design_raises(dummy_data):
+      ##put in logs make, sure still raises
+      column_missing = dummy_data.drop(columns=["design_id"] , axis =1)
+      with pytest.raises(Exception) as e:
+          transform_design(column_missing)
+      print(e)
