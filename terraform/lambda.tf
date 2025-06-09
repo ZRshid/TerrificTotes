@@ -22,7 +22,7 @@ data "archive_file" "zip_extract_handler" {
 # Zips the extract handler file for Lambda deployment.
 data "archive_file" "pg8000_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/package/"
+  source_dir  = "${path.root}/extract_package/"
   output_path = "${path.root}/zips/pg8000-package.zip"
 }
 
