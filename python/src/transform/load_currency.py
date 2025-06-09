@@ -14,7 +14,7 @@ def load_currency_codes_from_s3(columns:list[str], path=['s3://zip-bucket/curren
                         with an additional 'currency_id' column generated from the DataFrame index.
     """
     currency_df = wr.s3.read_csv(path, usecols=columns)
-    currency_df = sanitize_codes(currency_df)
+    currency_df = sanitize_rows(currency_df)
     currency_df['currency_id'] = currency_df.index  
     return currency_df
 
@@ -30,13 +30,21 @@ def load_currency_codes(file:str, columns:list[str]) -> pd.DataFrame:
     """
      
     currency_df = pd.read_csv(file, usecols=columns)
-    currency_df = sanitize_codes(currency_df)
+    currency_df = sanitize_rows(currency_df)
     currency_df['currency_id'] = currency_df.index     
     return currency_df
 
-def sanitize_codes(currency_df:pd.DataFrame) -> pd.DataFrame:
+def sanitize_rows(currency_df:pd.DataFrame,column_subset = ["currency_code", "currency_name"]) -> pd.DataFrame:
+    """Return a dataframe without null values or duplicate rows
+
+    Args:
+        currency_df (pd.DataFrame): a dataframe
+
+    Returns:
+        pd.DataFrame: A new dataframe without nulls or duplicate rows
+    """    
     currency_df =currency_df.dropna()
-    currency_df = currency_df.drop_duplicates(subset=["currency_code", "currency_name"])
+    currency_df = currency_df.drop_duplicates(subset=column_subset)
     currency_df = currency_df.reset_index(drop=True)
     return currency_df
 

@@ -1,4 +1,4 @@
-from src.transform.load_currency import load_currency_codes, load_currency_codes_from_s3, sanitize_codes
+from src.transform.load_currency import load_currency_codes, load_currency_codes_from_s3, sanitize_rows
 import pandas as pd
 import pytest 
 from unittest.mock import patch
@@ -104,16 +104,16 @@ class TestLoad_currency_codes_from_s3():
         assert (result["currency_id"].diff()[1:]==1).all()
 
 
-    class TestSanitize_codes():
+    class TestSanitize_rows():
         def test_returns_df(self,currency_df):
-            result = sanitize_codes(currency_df)
+            result = sanitize_rows(currency_df)
             assert isinstance(result, pd.DataFrame)
             assert result is not currency_df
         def test_has_no_nulls(self,currency_df):
-            result = sanitize_codes(currency_df)
+            result = sanitize_rows(currency_df)
             assert result[["currency_code", "currency_name"]].notnull().values.all()
         def test_returns_correct_df(self,currency_df,expected_df):
-            result = sanitize_codes(currency_df)
+            result = sanitize_rows(currency_df)
             pd.testing.assert_frame_equal(result,expected_df)
             
      
