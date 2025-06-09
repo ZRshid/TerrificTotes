@@ -1,0 +1,60 @@
+from src.transform.load_currency import load_currency_codes, load_currency_codes_from_s3
+import pandas as pd  
+import pytest 
+from unittest.mock import patch
+import awswrangler as wr
+import os
+
+@pytest.fixture
+def filepath():
+    cwd = os.getcwd()
+    if cwd.endswith("python"):
+        cwd = cwd[:-7]
+    return cwd+"/Data/Currency-codes.csv"
+
+class Test_Load_Currency_Codes():
+    
+    def test_func_return_df(self,filepath):
+        df = pd.DataFrame
+        print(os.getcwd())
+
+        headers = ["currency_code", "currency_name"]
+        result = load_currency_codes(filepath, headers)
+        assert isinstance(result, pd.DataFrame)
+
+    def test_func_returns_df_with_right_columns_names(self,filepath):
+        df = pd.DataFrame 
+        
+        headers_csv = ["currency_code", "currency_name"]
+        result_df = load_currency_codes(filepath, headers_csv)
+        columns = result_df.columns.to_list()
+        
+        assert "currency_code" in columns
+        assert "currency_name" in columns
+        assert "currency_id" in columns 
+        
+
+    @patch("awswrangler.s3.read_csv")
+    def test_func_loads_codes_from_s3(self, mock_read_csv):
+      
+        mock_read_csv.return_value = pd.DataFrame({
+            "currency_code": ["USD", "EUR"],
+            "currency_name": ["US Dollar", "Euro"]
+        })
+
+   
+        result = load_currency_codes_from_s3(columns=["currency_code", "currency_name"])
+      
+        assert isinstance(result, pd.DataFrame)
+       
+        assert "currency_id" in result.columns
+        
+        assert result.shape[0] == 2 
+     
+
+
+
+
+
+
+            

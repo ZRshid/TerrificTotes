@@ -25,7 +25,8 @@ def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str,timestamp:
         utc_timestamp = timestamp
     s3 = boto3.client("s3", region_name='eu-west-2')
     try:
-        key = f"{utc_timestamp[:-3]}/{table_name}:{utc_timestamp}.json"
+        ts_no_seconds = utc_timestamp[0:16]
+        key = f"{ts_no_seconds}/{table_name}:{utc_timestamp}.json"
         s3.put_object(
             Bucket = bucket_name,
             Body = raw_data, # json string

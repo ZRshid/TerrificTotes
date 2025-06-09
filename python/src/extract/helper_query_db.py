@@ -54,7 +54,6 @@ def query_db(query: str, conn: Connection) -> tuple:
     try:
         result = conn.run(query)
         columns = conn.columns
-        close_db(conn)
         return (result, columns)
     except DatabaseError as d:
         logging.error(f"error with database: {d}")
@@ -62,5 +61,3 @@ def query_db(query: str, conn: Connection) -> tuple:
     except InterfaceError as i:
         logging.error(f"error interfacing to database: {i}")
         raise InterfaceError
-    finally:
-        close_db(conn)

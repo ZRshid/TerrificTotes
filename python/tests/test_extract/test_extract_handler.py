@@ -78,13 +78,14 @@ class TestLambdaHandler:
     ):
         query_db_mm.return_value = ([row], columns)
 
-        expected_keys = "tables"
+        expected_keys = ["tables", "timestamp"]
 
         result = lambda_handler(event, {})
 
-        assert expected_keys in result
+        assert expected_keys[0] in result
+        assert expected_keys[1] in result
 
-    def test_lambda_handler_returns_dict_lists(
+    def test_lambda_handler_return_dict_table_list(
         self, query_db_mm, b, c, d, event, row, columns
     ):
         query_db_mm.return_value = ([row], columns)
@@ -92,6 +93,24 @@ class TestLambdaHandler:
         result = lambda_handler(event, {})
 
         assert isinstance(result["tables"], list)
+    def test_lambda_handler_return_dict_timestamp_string(
+        self, query_db_mm, b, c, d, event, row, columns
+    ):
+        query_db_mm.return_value = ([row], columns)
+
+        result = lambda_handler(event, {})
+
+        assert isinstance(result["timestamp"], str)
+
+    def test_lambda_handler_return_correct_time_stamp(
+        self, query_db_mm, b, c, d, event, row, columns
+    ):
+        query_db_mm.return_value = ([row], columns)
+
+        result = lambda_handler(event, {})
+
+        assert result["timestamp"] == "2025-06-02 11:31:55.00"
+        #
 
     # test extract and returns one table
 
@@ -103,7 +122,7 @@ class TestLambdaHandler:
 
         result = lambda_handler(event, {})
 
-        assert result == {"tables": ["table_name"]}
+        assert result["tables"] ==  ["table_name"]
 
     # # test extract and returns two tables
 
@@ -115,7 +134,7 @@ class TestLambdaHandler:
 
         result = lambda_handler(event_tables, {})
 
-        assert result == {"tables": ["table_name", "sales"]}
+        assert result["tables"] == ["table_name", "sales"]
 
 
 # test if the data have been saved

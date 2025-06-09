@@ -6,13 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 jobs:
   test_python:
     name: Test Python
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
     steps:
@@ -29,11 +26,11 @@ jobs:
         # put python path into enviroment var:
       - name: Set Python Path
         run: |
-          echo "{PYTHONPATH}=${{ github.workspace }}" >> "$GITHUB_ENV"
+          echo "{PYTHONPATH}=${{ github.workspace }}/python" >> "$GITHUB_ENV"
         
       - name: Install Dependencies
         run: make requirements
-      
+
       - name: Security Checks
         run: make security-test
 
@@ -45,16 +42,8 @@ jobs:
 
       - name: Check Test Coverage
         run: make check-coverage
-      
-  terraform_deploy:
-    runs-on: ubuntu-latest
-    needs: test_python
-    name: Deploy Terraform 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        # with:
-        #   ref: workflow-test
+      - name: Install Terraform Layers Requirements
+        run: make terraform-layers-requirements
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
@@ -68,13 +57,13 @@ jobs:
       - name: Initialise Terraform
         working-directory: terraform
         run: terraform init
-
-      - name: Terraform Layers
-        working-directory: terraform
-        run: make terraform-layers-requirements
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan
       # - name: Apply Terraform
       #   working-directory: terraform
       #   run: terraform apply -auto-approve
+      - name: upload currencies
+        run: |
+          source venv/bin/activate
+          python python/src/transform/helper_upload_csv_to_zip_bucket.py Data/Currency-codes.csv tt-zip-bucket currency-codes.csv
