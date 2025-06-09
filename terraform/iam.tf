@@ -82,7 +82,6 @@ resource "aws_iam_role_policy_attachment" "lambda_access_policy_attachment" {
     policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 
-############ CHANGES BELOW
 # ---------------------------
 # Lambda IAM Role - TRANSFORM 
 # ---------------------------
