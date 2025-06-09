@@ -14,7 +14,7 @@ data "archive_file" "zip_transform_handler" {
 # Zips the transform handler file for Lambda deployment.
 data "archive_file" "pandas_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/transform_package/pandas"
+  source_dir  = "${path.root}/transform_package/python/pandas"
   output_path = "${path.root}/zips/pandas-package.zip"
 }
 
