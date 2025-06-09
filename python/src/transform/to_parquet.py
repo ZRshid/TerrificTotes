@@ -3,7 +3,7 @@ import pandas as pd
 import logging
 from datetime import datetime, timezone
 
-def to_parquet(df: pd.DataFrame, bucket:str, key:str):
+def to_parquet(df: pd.DataFrame, bucket:str, key:str,timestamp:str|None = None):
     """
     Converts data into parquet format .
     Args:
@@ -17,7 +17,10 @@ def to_parquet(df: pd.DataFrame, bucket:str, key:str):
     """
 
     try:
-        utc_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H:%M:%S")
+        if timestamp==None:
+            utc_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H:%M:%S")
+        else:
+            utc_timestamp = timestamp.replace(' ', '_')
         path = f"s3://{bucket}/{key}/{utc_timestamp}.parquet"
         wr.s3.to_parquet(df=df, path=path)
     except Exception as e:

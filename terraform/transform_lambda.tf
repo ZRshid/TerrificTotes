@@ -14,7 +14,7 @@ data "archive_file" "zip_transform_handler" {
 # Zips the transform handler file for Lambda deployment.
 data "archive_file" "pandas_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/transform_package/pandas"
+  source_dir  = "${path.root}/transform_package/python/pandas"
   output_path = "${path.root}/zips/pandas-package.zip"
 }
 
@@ -50,7 +50,7 @@ resource "aws_lambda_function" "transform_handler" {
   function_name = var.transform_lambda_name
   description   = "transforms data"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "src.transform.transform_handler.lambda_handler"
+  handler       = "src.transform.initial_transform_handler.lambda_handler"
   runtime       = "python3.13"
   timeout       = 30
 
@@ -65,6 +65,4 @@ resource "aws_lambda_function" "transform_handler" {
   source_code_hash = aws_s3_object.transform_lambda_code.etag
 
   layers = [aws_lambda_layer_version.transform_layer_version.arn]
-
-
 }
