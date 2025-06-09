@@ -109,7 +109,8 @@ class TestTransform_Table:
         response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
         assert table in transformed_tables
 
-
+class TestOther:
+    ...
 
 class TestMake_key:
     def test_key_is_string():

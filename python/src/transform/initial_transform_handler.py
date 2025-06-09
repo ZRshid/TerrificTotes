@@ -9,6 +9,7 @@ from src.transform.transform_location import transform_location
 from src.transform.transform_payment_type import transform_payment_type
 from src.transform.transform_staff import transform_staff_with_department
 from src.transform.transform_transaction import transform_transaction
+from src.transform.dim_date import create_dim_date
 from src.transform.dim_date import dim_date
 from src.transform.load_currency import load_currency_codes_from_s3
 from datetime import datetime
@@ -60,8 +61,8 @@ def lambda_handler(event, context):
     # dim_staff = 
 
     #uncomment when create_dates available:
-    # if "date" in event["tables"]:
-    #     transformed_tables["dim_dates"] = create_dates(INITIAL_DATE,FUTURE_DATE)
+    if "date" in event["tables"]:
+        transformed_tables["dim_dates"] = create_dim_date(INITIAL_DATE,FUTURE_DATE)
 
     #repeat for all tables:
     for table_name,df_table in transformed_tables.items():
