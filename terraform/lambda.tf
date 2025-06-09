@@ -61,7 +61,7 @@ resource "aws_lambda_function" "extract_handler" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "src.extract.extract_handler.lambda_handler"
   runtime       = "python3.13"
-  timeout       = 30
+  timeout       = 45
 
   depends_on = [
     data.archive_file.zip_extract_handler,

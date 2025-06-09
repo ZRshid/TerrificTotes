@@ -27,7 +27,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
     from_time = event["from_time"]
     to_time = event["to_time"]
     raw_data_bucket = event["raw_data_bucket"]
-    timestamp = to_time[:-2]
+    timestamp = to_time
     # take the table from the event list
     tables = []
     try:
@@ -50,6 +50,7 @@ def lambda_handler(event: dict, context: dict) -> dict:
             )
 
             tables.append(table)
+        close_db(conn)
     except Exception as e:
         message = (
             f"Extraction Failed: On table {table}, previously extracted: {tables}. {e}"
@@ -57,14 +58,15 @@ def lambda_handler(event: dict, context: dict) -> dict:
         logging.critical(message)
         raise e
     finally:
-        close_db(conn)
+        # close_db(conn)
+        ...
 
     # assume if it gets this far it worked
     message = f"Extract Succeeded for {len(tables)} tables at {to_time} "
     logging.info(message)
 
     # return list of tables
-    return {"tables": tables}
+    return {"timestamp": timestamp,"tables": tables}
 
 
 if __name__ == "__main__":

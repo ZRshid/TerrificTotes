@@ -1,6 +1,7 @@
 from src.transform.transform_location import transform_location
 import pandas as pd
 import pytest
+import json 
 
 @pytest.fixture(autouse=True)
 def dummy_dataframe():
@@ -46,6 +47,7 @@ def test_correct_len_of_columns_after_drop(dummy_dataframe):
     length = len(dummy_dataframe.columns)
     assert length == 12
     response = transform_location(dummy_dataframe)
+
     result = len(response.columns)
     assert result == 8
 

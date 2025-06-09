@@ -64,6 +64,7 @@ def dummy_address():
 class TestTransformCounterparty:
     def test_return_dataframe(self, dummy_counterparty, dummy_address):
         result = transform_counterparty(dummy_counterparty, dummy_address)
+        
         assert isinstance(result, pd.DataFrame)
 
 
