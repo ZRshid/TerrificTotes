@@ -10,7 +10,7 @@ from pandas.testing import assert_frame_equal
 
 TEST_BUCKET = 'test-bucket'
 TEST_TABLE = "address"
-TEST_JSON = """{
+TEST_ADDRESS_JSON = """{
     "from_time": "2022-01-02 23:30:00.00", 
     "to_time": "2025-06-02 23:59:59.00", 
     "address": [
@@ -64,7 +64,7 @@ def s3_with_bucket(s3):
     )
     s3.put_object(
             Bucket = TEST_BUCKET,
-            Body = TEST_JSON,
+            Body = TEST_ADDRESS_JSON,
             Key = TEST_KEY
     )
     s3.put_object(
@@ -80,60 +80,19 @@ def event():
 
 
 class TestTransformHandler:
-    def test_transform_handler_request_is_successful(self):
+    def test_lambda_handler_returns_dict(self):
         pass
 
-    def test_address_data_transformed_to_dimension(self):
+    def test_dict_contains_keys(self):
+        expected_keys = ["transformed_tables","timestamp"]
+        
         pass
 
-    def test_counterparty_data_transformed_to_dimension(self):
-        # expected = pd.DataFrame(
-        #     [
-        #         {
-        #             "counterparty_id": 1,
-        #             "counterparty_legal_name": "Fahey and Sons",
-        #             "counterparty_legal_address_line_1": "605 Haskell Trafficway",
-        #             "counterparty_legal_address_line_2": "Axel Freeway",
-        #             "counterparty_legal_district": None,
-        #             "counterparty_legal_city": "East Bobbie",
-        #             "counterparty_legal_postal_code": "88253-4257",
-        #             "counterparty_legal_country": "Heard Island and McDonald Islands",
-        #             "counterparty_legal_phone_number": "9687 937447",
-        #         },
-        #         {
-        #             "counterparty_id": 2,
-        #             "counterparty_legal_name": "Leannon, Predovic and Morar",
-        #             "counterparty_legal_address_line_1": "079 Horacio Landing",
-        #             "counterparty_legal_address_line_2": None,
-        #             "counterparty_legal_district": None,
-        #             "counterparty_legal_city": "Utica",
-        #             "counterparty_legal_postal_code": "93045",
-        #             "counterparty_legal_country": "Austria",
-        #             "counterparty_legal_phone_number": "7772 084705",
-        #         },
-        #     ]
-        # )
-        # response = lambda_handler(event, {})
-        # assert_frame_equal(expected, response)
-        pass
 
-    def test_transform_handler_returns_dict(self):
-        pass
-
-    def test_transform_handler_fails(self):
-        pass
-
-# class TestLocationTable:
-#     def test_returns_dataframe(self, s3_with_bucket, event):
-#         transformed_tables = []
-#         response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
-#         assert isinstance(response, pd.DataFrame)
-
-#     def test_added_to_transformed_tables(self, s3_with_bucket, event):
-#         transformed_tables = []
-#         response = location(event, s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY)
-#         assert "dim_location" in transformed_tables
-
+    def test_transform_raises(self):
+       ##put in logs make, sure still raises
+       with pytest.raises(Exception) as e:
+           ...
 
 class TestTransform_Table:
     def test_returns_dataframe(self, s3_with_bucket, event):
@@ -149,3 +108,14 @@ class TestTransform_Table:
         transformed_tables = []
         response = transform_table("address", s3_with_bucket, transformed_tables, TEST_BUCKET, TEST_KEY,transform_location)
         assert table in transformed_tables
+
+
+
+class TestMake_key:
+    def test_key_is_string():
+        assert isinstance(Make_key("table","2025"),str)
+    def test_key_matches_expected():
+        table = 'design'
+        timestamp = '2025-05-05 23:11:23:48.01'
+        expected = ??
+        
