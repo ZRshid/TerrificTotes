@@ -38,7 +38,10 @@ terraform.rc
 
 #Zip files for lambda handlers
 terraform/zips/
-package/
+terraform/package/
+terraform/transform_package/
+terraform/extract_package/
+
 #non terraform stuff
 *__pycache__
 venv/

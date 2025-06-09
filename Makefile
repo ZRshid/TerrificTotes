@@ -56,16 +56,18 @@ unit-test:
 
 ## Run the coverage check
 check-coverage:
-	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=python/src/ --cov=python/utils)
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov-report term-missing --cov=python/src/ --cov=python/utils)
 
 ## Run all checks
 run-checks: security-test run-black unit-test check-coverage
 
-
-REQUESTS := pip install --upgrade requests -t ${WD}/terraform/package/python
-LS = ls ${WD}/terraform/package/python
+#install requirement layers for AWS Lambda functions
+REQUESTS := pip install --upgrade requests -t ${WD}/terraform/extract_package/python/
+PANDAS := pip install --upgrade pandas -t ${WD}/terraform/transform_package/
+LS := ls ${WD}/terraform/extract_package/python
 terraform-layers-requirements:
 	$(REQUESTS)
+	$(PANDAS)
 	$(LS)
 	
 
