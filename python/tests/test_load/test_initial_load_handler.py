@@ -15,14 +15,6 @@ def aws_credentials():
 @patch("src.load.initial_load_handler.get_secret")
 @patch("src.load.initial_load_handler.insert_parquet_file_to_db")
 class TestLambda_hander:
-    #simple things:
-        #returns dictionary
-        #? dictiary contains?
-            #correct keys
-            # count?
-            #
-        #raise error
-        #
    
     def test_returns_dict(self,insert,get_secret):
         get_secret.return_value = {'username':'test', 
