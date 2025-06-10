@@ -77,7 +77,21 @@ def s3_with_bucket(s3):
 
 @pytest.fixture()
 def event():
-    return {"tables" : ["address", "counterparty"]}                
+    return {
+        "tables" : [
+            "counterparty",
+            "currency",
+            "department",
+            "design",
+            "staff",
+            "sales_order",
+            "address",
+            "payment",
+            "purchase_order",
+            "payment_type",
+            "transaction"
+            ]
+        }                
 
 class TestTransformHandler:
     @patch("src.transform.initial_transform_handler.transform_tables")
@@ -122,19 +136,28 @@ class TestTransform_and_combine:
 
 class TestTransform_tables:
     @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.load_json")
+    @patch("src.transform.load_currency.wr")
     @patch("src.transform.initial_transform_handler.transform_table")
-    def test_returns_dict(self,counterparty,t_table,event):
+    def test_returns_dict(self,t_t,wr,load_json,counterparty,event):
         counterparty.return_value = pd.DataFrame()
-        t_table.return_value = pd.DataFrame()
+        load_json.return_value = pd.DataFrame()
+        wr.s3.read_csv.return_value = pd.DataFrame()
+        t_t.return_value = pd.DataFrame()
         timestamp = '2025-06-03 08:08:48.01'
         tables = event['tables']
         result = transform_tables(tables,"s3",timestamp)
         assert isinstance(result,dict)
     @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.load_json")
+    @patch("src.transform.load_currency.wr")
     @patch("src.transform.initial_transform_handler.transform_table")
-    def test_returns_all_tables(self,counterparty,t_table,event):
+    def test_returns_all_tables(self,t_t,wr,load_json,counterparty,event):
         counterparty.return_value = pd.DataFrame()
-        t_table.return_value = pd.DataFrame()
+        load_json.return_value = pd.DataFrame()
+        wr.s3.read_csv.return_value = pd.DataFrame()
+        t_t.return_value = pd.DataFrame()
+
         timestamp = '2025-06-03 08:08:48.01'
         tables = event['tables']
         result = transform_tables(tables,"s3",timestamp)
@@ -142,18 +165,21 @@ class TestTransform_tables:
         assert "dim_counterparty" in result
         assert "dim_location" in result
     @patch("src.transform.initial_transform_handler.transform_and_combine")
+    @patch("src.transform.initial_transform_handler.load_json")
+    @patch("src.transform.load_currency.wr")
     @patch("src.transform.initial_transform_handler.transform_table")
-    def test_dict_values_is_dataframe(self,counterparty,t_table,event):
+    def test_dict_value_is_a_dataframe(self,t_t,wr,load_json, counterparty, event):
         counterparty.return_value = pd.DataFrame()
-        t_table.return_value = pd.DataFrame()
+        load_json.return_value = pd.DataFrame()
+        wr.s3.read_csv.return_value = pd.DataFrame()
+        t_t.return_value = pd.DataFrame()
+
         timestamp = '2025-06-03 08:08:48.01'
         tables = event['tables']
-        result = transform_tables(tables,"s3",timestamp = '2025-06-03 08:08:48.01')
+        result = transform_tables(tables,"s3",timestamp = timestamp)
         
         assert isinstance(result["dim_counterparty"],pd.DataFrame)
         
-
-
 class TestMake_key:
     def test_key_is_string(self):
         assert isinstance(make_key("table","2025"),str)
