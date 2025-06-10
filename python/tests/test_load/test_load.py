@@ -1,13 +1,14 @@
-from python.src.load.load import get_secret, download_parquet_from_s3
-import os 
-import io 
+from python.src.load.load import get_secret, download_parquet_from_s3_and_saves_it_in_memory, convert_buffer_to_dataframe
 import pyarrow as pa
 import pyarrow.parquet as pq
+import pandas as pd
 import boto3
+import os 
+import io 
 from botocore.exceptions import ClientError
 from moto import mock_aws 
 import pytest 
-import json 
+import json
 
 
 @pytest.fixture()  
@@ -55,11 +56,9 @@ class TestGetSecret:
             Name = secret_name, 
             SecretString = json.dumps(expected_secret)
             )
-
         result = get_secret(secret_name)
         assert result == expected_secret
         assert response['ResponseMetadata']['HTTPStatusCode'] == 200
-
 
     def test_get_secret_raises_an_error_when_secret_does_not_exist(self):
         missing_secret_name = "nonexistent_secret"
@@ -68,20 +67,21 @@ class TestGetSecret:
 
 
 class TestDownloadingParquetFromS3():
-    def test_downloads_parquest_file_from_an_s3_bucket_into_IoBytes(self, mock_s3_boto, mock_s3_bucket):
-        bucket, key = mock_s3_bucket
-        result = download_parquet_from_s3(bucket, key)
+    def test_downloads_parquest_file_from_an_s3_bucket_into_IoBytes(self, mock_s3_boto,mock_s3_bucket):
+        bucket, key , body = mock_s3_bucket
+        result = download_parquet_from_s3_and_saves_it_in_memory(bucket, key)
         print(result)
         assert isinstance(result,io.BytesIO)
 
     def test_checks_the_content_inside_the_bytes(self, mock_s3_boto,mock_s3_bucket):
         bucket, key, body = mock_s3_bucket
-        result = download_parquet_from_s3(bucket, key)
+        result = download_parquet_from_s3_and_saves_it_in_memory(bucket, key)
         content = result.read()
         assert content == body.encode()
        
-class TestconvertingParquetToDataframe():
-     df = pd.DataFrame([
+class TestConvertingParquetToDataframe():
+     def test_converts_parquet_into_a_dataframe(self):
+        df = pd.DataFrame([
         {
             "design_id": 8,
             "created_at": "2022-11-03 14:20:49.962000",
@@ -91,13 +91,20 @@ class TestconvertingParquetToDataframe():
             "last_updated": "2022-11-03 14:20:49.962000"
         }
     ])
-     
-     table = pa.Table.from_pandas(df)
-     buffer = io.BytesIO()
-     pq.write_table(table, buffer)
-     #seek
-   
+        table = pa.Table.from_pandas(df)
+        buffer = io.BytesIO()
+        pq.write_table(table, buffer)
+        buffer.seek(0) 
+        result = convert_buffer_to_dataframe(buffer)
+        pd.testing.assert_frame_equal(df, result)
+        assert result.shape == (1,6)  
+      
+       
 
+        
+    
+    
+ 
 
 
            

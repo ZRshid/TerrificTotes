@@ -1,16 +1,23 @@
 from pyarrow import fs
 import pyarrow.parquet as pq
-import pg8000
 import boto3
 import io
 import logging
 from python.utils.utils import get_secret
 
-
-
 secrets = get_secret("WarehouseSecrets")
 
-def download_parquet_from_s3(bucket: str, key: str):
+def download_parquet_from_s3_and_saves_it_in_memory(bucket: str, key: str) -> str:
+    """
+    Downloads data from an S3 bucket in parquet format. 
+    Args:
+        bucket (str): The s3 bucket where the data is stored in.
+        key (str): This is the S3 key, it contains the path within the bucket where the files are stored.
+    Returns:
+        A Buffer: Essentialy stores the files in memory and not on disk.
+    Raises:
+        Exception: If there is an exception when downloading the files and saving it in memory, an exception is raised.
+    """
     try:
         s3 = boto3.client("s3")
         obj = s3.get_object(Bucket=bucket, Key=key)
@@ -18,66 +25,25 @@ def download_parquet_from_s3(bucket: str, key: str):
         return buffer
     except Exception as err:
         logging.error(f"error: {err}")
-        raise 
+        raise err
    
-def convert_buffer_to_dataframe(buffer: io.BytesIO):
-    table = pq.read_table(buffer) #reads files. Bytes Io makes the data behave like a file hence it can be used here. 
-    df = table.to_pandas()
-    return df
-
-# def connect_to_postgres(secrets: dict):
-#     conn=pg8000.connect(
-#         user = secrets["username"]
-#         password = secrets["password"]
-#         host = secrets["host"]
-#         database = secrets["dbname"]
-#         port = int(secrets["port"])  
-# )
-#     return conn
-
-# def load_dataframe_to_warehouse(conn, df ):
-
-
-
-    # for index,row in df.iterrows():
-    # data = (
-        
-    #     row['order_id'], 
-    #     row['order_date'], 
-    #     row['ship_date'], 
-    #     row['customer_id'], 
-    #     row['customer_name'],
-    #     row['segment'], 
-    #     row['city'], 
-    #     row['state'], 
-    #     row['region'], 
-    #     row['category'], 
-    #     row['sales']
-    
-    # )
-
-
-    
-    # cursor.execute("""
-                    
-    # INSERT INTO sales(
-    #         order_id, order_date, ship_date, customer_id, customer_name, 
-    #         segment, city, state, region, category, sales ) 
-    #         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", data)
-
-
-
-
-
-
-
+def convert_buffer_to_dataframe(buffer: io.BytesIO) -> io.BytesIO:
+    """
+    Downloads the buffer (data stored in memory) to a dataframe. 
+    Args:
+        buffer: This is the data stored in memory. 
+    Returns:
+         A Dataframe.   
+    Raises:
+         Exception: If there is an exception when converting the files into a dataframe, an exception is raised. 
+    """
+    try:
+        table = pq.read_table(buffer) #reads files. Bytes Io makes the data behave like a file hence it can be used here. 
+        df = table.to_pandas()
+        return df
+    except Exception as err:
+        logging.error(f"error: The file could not be  {err}")
+        raise err
+                      
 
    
-
-
-
-
-
-
-
-
