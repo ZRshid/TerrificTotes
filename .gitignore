@@ -41,6 +41,7 @@ terraform/zips/
 terraform/package/
 terraform/transform_package/
 terraform/extract_package/
+terraform/load_package/
 
 #non terraform stuff
 *__pycache__
