@@ -12,13 +12,14 @@ variable "backend_bucket" {
   default     = "snacks-tt-tfstate"
 }
 
-## ADDED 
 # Name of the S3 bucket used for storing processed data from the raw_data bucket.
 variable "processed_data_bucket" {
   description = "processed data bucket: TerrificTotes-tfstate"
   type        = string
   default     = "tt-processed-data"
 }
+
+###### Lambda Variables ######
 
 # Name assigned to the AWS Lambda function that performs data extraction.
 # Used when defining or referencing the Lambda resource.
@@ -34,6 +35,14 @@ variable "transform_lambda_name" {
   description = "lambda transform handler name"
   type        = string
   default     = "transform_data"
+}
+
+# Name assigned to the AWS Lambda function that performs data load to the star table.
+# Used when defining or referencing the Lambda resource.
+variable "load_lambda_name" {
+  description = "lambda transform handler name"
+  type        = string
+  default     = "load_data_to_warehouse"
 }
 
 # S3 bucket name where Lambda deployment packages (ZIP files) are stored.
@@ -56,6 +65,15 @@ variable "transform_zip" {
   type        = string
   default     = "transform_handler.zip"
 }
+
+# File name of the ZIP archive containing the Lambda function code for data load.
+variable "load_zip" {
+  description = "the zip file of load handler lambda"
+  type        = string
+  default     = "load_handler.zip"
+}
+
+###### CloudWatch Variables ######
 
 # Variable evaluation periods
 variable "evaluation_periods" {
