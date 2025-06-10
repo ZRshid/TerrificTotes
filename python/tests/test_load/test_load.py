@@ -1,4 +1,4 @@
-from python.src.load.load import get_secret, download_parquet_from_s3_and_saves_it_in_memory, convert_buffer_to_dataframe
+from src.load.load import get_secret, download_parquet_from_s3_and_saves_it_in_memory, convert_buffer_to_dataframe
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pandas as pd
