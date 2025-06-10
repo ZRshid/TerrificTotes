@@ -11,7 +11,7 @@ data "archive_file" "zip_load_handler" {
 }
 
 # Zips the load handler file for Lambda deployment.
-data "archive_file" "pandas_layer" {
+data "archive_file" "sqlalchemy_layer" {
   type        = "zip"
   source_dir  = "${path.root}/load_package/python/sqlalchemy"
   output_path = "${path.root}/zips/SQLAlchemy-package.zip"
@@ -29,16 +29,16 @@ resource "aws_s3_object" "load_lambda_code" {
 resource "aws_s3_object" "load_layer" {
   bucket = aws_s3_bucket.zip_bucket.bucket
   key    = "SQLAlchemy-package.zip"
-  source = data.archive_file.pandas_layer.output_path
-  etag = filemd5(data.archive_file.pandas_layer.output_path)
+  source = data.archive_file.sqlalchemy_layer.output_path
+  etag = filemd5(data.archive_file.sqlalchemy_layer.output_path)
 }
 
-#create a layer for the pandas dependencies
+#create a layer for the SQLAlchemy dependencies
 resource "aws_lambda_layer_version" "load_layer_version" {
   s3_key = aws_s3_object.load_layer.key
   s3_bucket = aws_s3_object.load_layer.bucket
-  layer_name       = "lambda_pandas_package"
-  source_code_hash = "${filebase64sha256(data.archive_file.pandas_layer.output_path)}"
+  layer_name       = "lambda_sqlalchemy_layer_package"
+  source_code_hash = "${filebase64sha256(data.archive_file.sqlalchemy_layer.output_path)}"
   depends_on = [ aws_s3_object.load_layer ]
 }
 
