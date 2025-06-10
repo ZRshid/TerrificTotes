@@ -40,7 +40,7 @@ variable "transform_lambda_name" {
 # Name assigned to the AWS Lambda function that performs data load to the star table.
 # Used when defining or referencing the Lambda resource.
 variable "load_lambda_name" {
-  description = "lambda transform handler name"
+  description = "lambda load handler name"
   type        = string
   default     = "load_data_to_warehouse"
 }
