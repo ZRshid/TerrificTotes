@@ -3,7 +3,7 @@ import pyarrow.parquet as pq
 import boto3
 import io
 import logging
-from python.utils.utils import get_secret
+from utils.utils import get_secret
 
 secrets = get_secret("WarehouseSecrets")
 
@@ -14,7 +14,7 @@ def download_parquet_from_s3_and_saves_it_in_memory(bucket: str, key: str) -> st
         bucket (str): The s3 bucket where the data is stored in.
         key (str): This is the S3 key, it contains the path within the bucket where the files are stored.
     Returns:
-        A Buffer: Essentialy stores the files in memory and not on disk.
+        A Buffer: Essentially stores the files in memory and not on disk.
     Raises:
         Exception: If there is an exception when downloading the files and saving it in memory, an exception is raised.
     """
