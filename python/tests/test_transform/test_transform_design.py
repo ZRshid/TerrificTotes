@@ -65,4 +65,3 @@ def test_transform_design_raises(dummy_data):
       column_missing = dummy_data.drop(columns=["design_id"] , axis =1)
       with pytest.raises(Exception) as e:
           transform_design(column_missing)
-      print(e)
