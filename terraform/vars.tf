@@ -28,6 +28,14 @@ variable "lambda_name" {
   default     = "extract_data_from_table"
 }
 
+# Name assigned to the AWS Lambda function that performs data transformation.
+# Used when defining or referencing the Lambda resource.
+variable "transform_lambda_name" {
+  description = "lambda transform handler name"
+  type        = string
+  default     = "transform_data"
+}
+
 # S3 bucket name where Lambda deployment packages (ZIP files) are stored.
 variable "zip_bucket" {
   description = "bucket storage for zip files"
@@ -40,6 +48,13 @@ variable "extract_zip" {
   description = "the zip file of extract handler lambda"
   type        = string
   default     = "extract_handler.zip"
+}
+
+# File name of the ZIP archive containing the Lambda function code for data transform.
+variable "transform_zip" {
+  description = "the zip file of transform handler lambda"
+  type        = string
+  default     = "transform_handler.zip"
 }
 
 # Variable evaluation periods
