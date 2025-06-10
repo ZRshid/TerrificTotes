@@ -59,22 +59,6 @@ variable "extract_zip" {
   default     = "extract_handler.zip"
 }
 
-# File name of the ZIP archive containing the Lambda function code for data transform.
-variable "transform_zip" {
-  description = "the zip file of transform handler lambda"
-  type        = string
-  default     = "transform_handler.zip"
-}
-
-# File name of the ZIP archive containing the Lambda function code for data load.
-variable "load_zip" {
-  description = "the zip file of load handler lambda"
-  type        = string
-  default     = "load_handler.zip"
-}
-
-###### CloudWatch Variables ######
-
 # Variable evaluation periods
 variable "evaluation_periods" {
   description = "number of evaluation periods for the cloudwatch alarm"
