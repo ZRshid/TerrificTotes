@@ -104,8 +104,8 @@ class TestLambda_hander:
                             'port':'test',
                             'dbname':'test'
                             }
-        get_secret.side_effect= KeyError()
-        # insert.side_effect= KeyError()
+        get_secret.side_effect= ValueError()
+        
         event = {'timestamp':"2025-06-02 23:59:59.00","tables":[]}
         context = {}
         ##after puting in logs make sure still raises
