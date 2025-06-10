@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 import logging
 
 
-def create_sql(
+def load_to_db(
     df: pd.DataFrame,
     table_name: str,
     user: str,
