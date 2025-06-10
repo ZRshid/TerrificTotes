@@ -1,8 +1,7 @@
 import pytest
 import pandas as pd
 from unittest.mock import patch
-from src.transform.create_sql import create_sql
-
+from src.load.load_to_db import load_to_db
 
 @pytest.fixture
 def dummy_data():
@@ -46,10 +45,10 @@ def dummy_data():
     return df
 
 
-class TestCreate_sql:
+class TestLoadToDb:
 
-    @patch("src.transform.create_sql.create_engine")
-    def test_create_sql_mocked(self, mock_create_engine, dummy_data):
+    @patch("src.load.load_to_db.create_engine")
+    def test_load_to_db_mocked(self, mock_create_engine, dummy_data):
         # Arrange
         test_df = dummy_data
         mock_table = "test"
@@ -60,12 +59,12 @@ class TestCreate_sql:
         expected_db_url = f"postgresql+pg8000://{mock_user}:{mock_password}@{mock_host}/{mock_database}"
         mock_engine = mock_create_engine.return_value
         # Act
-        result = create_sql(
+        result = load_to_db(
             test_df, mock_table, mock_user, mock_password, mock_host, mock_database
         )
         # Assert
         mock_create_engine.assert_called_once()
-        # .to_sql is called on the DataFrame
+       
         assert mock_engine is not None
         mock_create_engine.assert_called_once_with(
             "postgresql+pg8000://test:test@test/test"
