@@ -49,7 +49,7 @@ resource "aws_lambda_function" "load_handler" {
   function_name = var.load_lambda_name
   description   = "loads data"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "src.load.initial_transform_handler.lambda_handler" ##PUT THE FILENAME HERE
+  handler       = "src.load.initial_initial_load_handler.lambda_handler" 
   runtime       = "python3.13"
   timeout       = 30
 
