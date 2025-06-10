@@ -2,7 +2,7 @@ import logging
 from src.load.load import download_parquet_from_s3_and_saves_it_in_memory, convert_buffer_to_dataframe
 from src.transform.initial_transform_handler import make_key
 from utils.utils import get_secret
-from src.load.create_sql import load_to_db
+from src.load.load_to_db import load_to_db
 
 #event = {"transformed_tables", "timestamp": }
 logging.getLogger().setLevel(logging.INFO)
