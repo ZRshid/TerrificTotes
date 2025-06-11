@@ -62,17 +62,15 @@ check-coverage:
 run-checks: security-test run-black unit-test check-coverage
 
 #install requirement layers for AWS Lambda functions
-REQUESTS := pip install --upgrade requests -t ${WD}/terraform/extract_package/python/
+REQUESTS := pip install --upgrade requests pg8000 -t ${WD}/terraform/extract_package/python/
 PANDAS := pip install --upgrade pandas -t ${WD}/terraform/transform_package/python/
-SQLALCHEMY := pip install --upgrade sqlalchemy -t ${WD}/terraform/load_package/python/
-PYARROW := pip install --upgrade pyarrow -t ${WD}/terraform/load_package/python/
+LOAD_LAYER := pip install --upgrade sqlalchemy -t ${WD}/terraform/load_package/python/
 
 LS := ls ${WD}/terraform/extract_package/python
 terraform-layers-requirements:
 	$(REQUESTS) 
 	$(PANDAS)
-	$(SQLALCHEMY)
-	$(PYARROW)
+	$(LOAD_LAYER)
 	$(LS)
 	
 

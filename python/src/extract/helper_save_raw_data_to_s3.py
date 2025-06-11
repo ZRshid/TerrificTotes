@@ -22,7 +22,7 @@ def save_raw_data_to_s3(raw_data:str, table_name:str, bucket_name:str,timestamp:
     if timestamp == None:
         utc_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d_%H:%M:%S")
     else:
-        utc_timestamp = timestamp
+        utc_timestamp = timestamp.replace(" ", "_")
     s3 = boto3.client("s3", region_name='eu-west-2')
     try:
         ts_no_seconds = utc_timestamp[0:16]
