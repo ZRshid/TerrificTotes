@@ -20,7 +20,10 @@ Previously written
 - pg8000
 - Pytest
 - CloudWatch
-
+- Boto3
+- Moto
+- SQLAlchemy
+- PyArrow
 
 ## Setup Instructions
 
@@ -126,10 +129,6 @@ python/
     utils/
         utils.py 
 
-specifications/
-    instructions.md
-    mvp.png
-
 terraform-backend/
     .terraform.lock.hcl
     main.tf
@@ -152,13 +151,11 @@ terraform/
 
 .gitignore
 Makefile
-ProjectPlanningNotes.md
 README.md
-psuedo_lambda.md
 requirements.dev.txt
 requirements.txt
 snacks.txt
 ```
 
-## Future Improvements
+## Reflections
 - 
