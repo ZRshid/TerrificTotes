@@ -65,11 +65,14 @@ run-checks: security-test run-black unit-test check-coverage
 REQUESTS := pip install --upgrade requests -t ${WD}/terraform/extract_package/python/
 PANDAS := pip install --upgrade pandas -t ${WD}/terraform/transform_package/python/
 SQLALCHEMY := pip install --upgrade sqlalchemy -t ${WD}/terraform/load_package/python/
+PYARROW := pip install --upgrade pyarrow -t ${WD}/terraform/load_package/python/
+
 LS := ls ${WD}/terraform/extract_package/python
 terraform-layers-requirements:
 	$(REQUESTS) 
 	$(PANDAS)
 	$(SQLALCHEMY)
+	$(PYARROW)
 	$(LS)
 	
 

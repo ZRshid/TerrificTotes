@@ -60,9 +60,9 @@ jobs:
       - name: Plan Terraform
         working-directory: terraform
         run: terraform plan
-      # - name: Apply Terraform
-      #   working-directory: terraform
-      #   run: terraform apply -auto-approve
+      - name: Apply Terraform
+        working-directory: terraform
+        run: terraform apply -auto-approve
       - name: upload currencies
         run: |
           source venv/bin/activate

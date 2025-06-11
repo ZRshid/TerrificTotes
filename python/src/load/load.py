@@ -1,10 +1,8 @@
-from pyarrow import fs
+import pyarrow as pa
 import pyarrow.parquet as pq
 import boto3
 import io
 import logging
-from utils.utils import get_secret
-
 
 def download_parquet_from_s3_and_saves_it_in_memory(bucket: str, key: str) -> str:
     """

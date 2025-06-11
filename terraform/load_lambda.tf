@@ -6,7 +6,7 @@
 data "archive_file" "zip_load_handler" {
   type = "zip"
   #source directory of the files needed:
-  source_dir = "${path.root}/../python/"
+  source_dir = "${path.root}/../python"
   output_path = "${path.module}/zips/load_handler.zip"
   excludes = [
     "transform/*",
@@ -21,7 +21,7 @@ data "archive_file" "zip_load_handler" {
 # Zips the load handler file for Lambda deployment.
 data "archive_file" "sqlalchemy_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/load_package/python/sqlalchemy"
+  source_dir  = "${path.root}/load_package/"
   output_path = "${path.root}/zips/SQLAlchemy-package.zip"
 }
 
@@ -57,7 +57,7 @@ resource "aws_lambda_function" "load_handler" {
   function_name = var.load_lambda_name
   description   = "loads data"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "src.load.initial_initial_load_handler.lambda_handler" 
+  handler       = "src.load.initial_load_handler.lambda_handler" 
   runtime       = "python3.13"
   timeout       = 30
 
@@ -71,5 +71,7 @@ resource "aws_lambda_function" "load_handler" {
   s3_key           = aws_s3_object.load_lambda_code.key
   source_code_hash = aws_s3_object.load_lambda_code.etag
 
-  layers = [aws_lambda_layer_version.load_layer_version.arn]
+  layers = [aws_lambda_layer_version.load_layer_version.arn,
+          aws_lambda_layer_version.transform_layer_version.arn
+  ]
 }
