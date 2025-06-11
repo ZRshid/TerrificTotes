@@ -30,6 +30,12 @@ resource "aws_iam_role" "lambda_role" {
   assume_role_policy = data.aws_iam_policy_document.trust_policy.json
 }
 
+# Creates an IAM role for the Lambda function using the trust policy defined above.
+resource "aws_iam_role" "lambda_load_role" {
+  name               = var.load_lambda_name
+  assume_role_policy = data.aws_iam_policy_document.trust_policy.json
+}
+
 
 # ------------------------------
 # Lambda IAM Policy for S3 Read/Write
@@ -147,6 +153,11 @@ resource "aws_iam_role_policy_attachment" "transform_s3_policy_attach" {
 data "aws_secretsmanager_secret" "aws_secret" {
   name = "totesys_secret" # secret name
 }
+
+# Retrieves the existing secret in AWS Secrets Manager used by the Lambda.
+data "aws_secretsmanager_secret" "aws_secret_load" {
+  name = "WarehouseSecrets" # secret name
+}
  
 # ------------------------------
 # Lambda IAM Policy for Secrets Manager 
@@ -165,7 +176,8 @@ resource "aws_iam_policy" "lambda_secret_access" {
           "secretsmanager:GetSecretValue"
         ],
 # remove when tested        Resource = "${data.aws_secretsmanager_secret.aws_secret.arn}/*"
-        Resource = data.aws_secretsmanager_secret.aws_secret.arn
+        # Resource = data.aws_secretsmanager_secret.aws_secret.arn
+        Resource = "*"
       } 
     ]
   })

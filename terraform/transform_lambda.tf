@@ -7,14 +7,22 @@ data "archive_file" "zip_transform_handler" {
   type = "zip"
   # source_file = "${path.module}/../python/src/transform/transform_handler.py"
   #source directory of the files needed:
-  source_dir = "${path.root}/../python/src/transform"
+  source_dir = "${path.root}/../python"
   output_path = "${path.module}/zips/transform_handler.zip"
+  excludes = [
+    "transform/*",
+    "load/*",
+    "tests/*",
+    "*/__pycache__",
+    "__pycache__",
+    ".pytest_cache"
+  ]
 }
 
 # Zips the transform handler file for Lambda deployment.
 data "archive_file" "pandas_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/transform_package/python/pandas"
+  source_dir  = "${path.root}/transform_package/"
   output_path = "${path.root}/zips/pandas-package.zip"
 }
 
@@ -64,5 +72,5 @@ resource "aws_lambda_function" "transform_handler" {
   s3_key           = aws_s3_object.transform_lambda_code.key
   source_code_hash = aws_s3_object.transform_lambda_code.etag
 
-  layers = [aws_lambda_layer_version.transform_layer_version.arn]
+  layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python313:2"]
 }
