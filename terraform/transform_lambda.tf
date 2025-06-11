@@ -60,7 +60,7 @@ resource "aws_lambda_function" "transform_handler" {
   role          = aws_iam_role.lambda_role.arn
   handler       = "src.transform.initial_transform_handler.lambda_handler"
   runtime       = "python3.13"
-  timeout       = 30
+  timeout       = 250
 
   depends_on = [
     data.archive_file.zip_transform_handler,

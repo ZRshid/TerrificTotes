@@ -144,21 +144,25 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         transformed_tables["dim_location"] = transform_table(
             "address", s3, RAW_DATA_BUCKET, key, transform_location
         )
+        logging.INFO("Transform({timestamp}) completed - address")
     if "design" in tables:
         key = make_key("design", timestamp)
         transformed_tables["dim_design"] = transform_table(
             "design", s3, RAW_DATA_BUCKET, key, transform_design
         )
+        logging.INFO("Transform({timestamp}) completed - design")
     if "payment_types" in tables:
         key = make_key("payment_types", timestamp)
         transformed_tables["dim_payment_types"] = transform_table(
             "payment_types", s3, RAW_DATA_BUCKET, key, transform_payment_type
         )
+        logging.INFO(f"Transform({timestamp}) completed - payment_type")
     if "transaction" in tables:
         key = make_key("transaction", timestamp)
         transformed_tables["dim_transaction"] = transform_table(
             "transaction", s3, RAW_DATA_BUCKET, key, transform_transaction
         )
+        logging.INFO("Transform({timestamp}) completed - transaction ")
     if "counterparty" in tables:
         if "address" in tables:
             key_counterparty = make_key("counterparty", timestamp)
@@ -172,6 +176,7 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
                 "address",
                 transform_counterparty,
             )
+            logging.INFO(f"Transform({timestamp}) completed - counterparty")
         else:
             raise ValueError(
                 "address table missing unable to transform counterparty table"
@@ -189,6 +194,7 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
                 "department",
                 transform_staff_with_department,
             )
+            logging.INFO(f"Transform({timestamp}) completed - department")
         else:
             raise ValueError("department table missing unable to transform staff table")
 
@@ -197,8 +203,11 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
     transformed_tables["dim_currency"] = load_currency_codes_from_s3(
         ["currency_code", "currency_name"]
     )
+    logging.INFO(f"Transform({timestamp})  - currency created")
+
     # if "date" in tables:
     transformed_tables["dim_dates"] = create_dim_date(INITIAL_DATE, FUTURE_DATE)
+    logging.INFO(f"Transform({timestamp})  - date created")
 
     # dataframe for fact table
     if "sales" in tables:
@@ -206,6 +215,7 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         transformed_tables["fact_sales_order"] = transform_table(
             "sales", s3, RAW_DATA_BUCKET, sales_key, "sales", sales_facts
         )
+    logging.INFO(f"Transform({timestamp}) completed - sales")
 
     return transformed_tables
 
