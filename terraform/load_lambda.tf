@@ -6,8 +6,16 @@
 data "archive_file" "zip_load_handler" {
   type = "zip"
   #source directory of the files needed:
-  source_dir = "${path.root}/../python/src/load"
+  source_dir = "${path.root}/../python/"
   output_path = "${path.module}/zips/load_handler.zip"
+  excludes = [
+    "transform/*",
+    "extract/*",
+    "tests/*",
+    "*/__pycache__",
+    "__pycache__",
+    ".pytest_cache"
+  ]
 }
 
 # Zips the load handler file for Lambda deployment.
