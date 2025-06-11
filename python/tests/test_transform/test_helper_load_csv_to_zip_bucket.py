@@ -14,7 +14,7 @@ class Test_upload_csv_to_zip_bucket():
 
         # Define test input values
         local_path = "Data/currency-codes.csv"
-        bucket_name = "zip-bucket" 
+        bucket_name = "tt-zip-bucket" 
         s3_key = "s3_currency_codes.csv"  # Object key in the S3 bucket
 
         # Call the function under test and capture the result
@@ -40,7 +40,7 @@ class Test_upload_csv_to_zip_bucket():
 
         # Define test input values
         local_path = "Data/currency-codes.csv"
-        bucket_name = "zip-bucket"
+        bucket_name = "tt-zip-bucket"
         s3_key = "s3_currency_codes.csv"
 
         # Call the function under test and capture the result

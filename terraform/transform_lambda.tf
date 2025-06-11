@@ -42,7 +42,7 @@ resource "aws_s3_object" "transform_layer" {
   etag = filemd5(data.archive_file.pandas_layer.output_path)
 }
 
-#create a layer for the pandas dependencies
+# create a layer for the pandas dependencies
 resource "aws_lambda_layer_version" "transform_layer_version" {
   s3_key = aws_s3_object.transform_layer.key
   s3_bucket = aws_s3_object.transform_layer.bucket
@@ -64,8 +64,7 @@ resource "aws_lambda_function" "transform_handler" {
 
   depends_on = [
     data.archive_file.zip_transform_handler,
-    aws_s3_bucket.zip_bucket,
-    aws_s3_object.transform_layer
+    aws_s3_bucket.zip_bucket
   ]
 
   s3_bucket        = aws_s3_object.transform_lambda_code.bucket
@@ -73,4 +72,4 @@ resource "aws_lambda_function" "transform_handler" {
   source_code_hash = aws_s3_object.transform_lambda_code.etag
 
   layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python313:2"]
-}
+}         #[aws_lambda_layer_version.transform_layer_version.arn]
