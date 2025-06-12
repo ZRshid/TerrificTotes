@@ -22,11 +22,13 @@ As a final step, we visualised the data to demonstrate its value for business in
 - Terraform
 - Lambda
 - S3
+- IAM
 - PostgreSQL
 - Pandas
 - pg8000
 - Pytest
 - CloudWatch
+- SNS
 - Boto3
 - Moto
 - SQLAlchemy
