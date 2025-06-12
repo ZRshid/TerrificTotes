@@ -1,6 +1,8 @@
 import logging
 import boto3
 import pandas as pd
+import gc
+import pytz
 from src.transform.load_json import load_json
 from src.transform.to_parquet import to_parquet
 from src.transform.transform_counterparty import transform_counterparty
@@ -13,7 +15,6 @@ from src.transform.dim_date import create_dim_date
 from src.transform.load_currency import load_currency_codes_from_s3
 from src.transform.fact_sales import sales_facts
 from datetime import datetime
-import pytz
 
 # import fact tables
 
@@ -57,7 +58,7 @@ def lambda_handler(event, context):
         logging.error(f"Table transforms failed: {e}")
         raise e
 
-    return {"transformed_tables": transformed_tables.keys(), "timestamp": timestamp}
+    return {"transformed_tables": list(transformed_tables.keys()), "timestamp": timestamp}
 
 
 def make_key(table: str, timestamp: str) -> str:
@@ -152,6 +153,8 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         table = None
         transformed_tables[dim] = True
         logging.info(f"Transform({timestamp}) completed - address")
+    else:
+        logging.info(f"not in tables - address")
     if "design" in tables:
         key = make_key("design", timestamp)
         dim = "dim_design"
@@ -163,33 +166,43 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         table = None
         transformed_tables[dim] = True
         logging.info(f"Transform({timestamp}) completed - design")
-    if "payment_types" in tables:
-        key = make_key("payment_types", timestamp)
-        dim = "dim_payment_types"
-        table = transform_table(
-            "payment_types", s3, RAW_DATA_BUCKET, key, transform_payment_type
-        )
+    else:
+        logging.info(f"not in tables - design")
+    gc.collect()   
+    # if "payment" in tables:
+    #     key = make_key("payment", timestamp)
+    #     dim = "dim_payment_types"
+    #     table = transform_table(
+    #         "payment", s3, RAW_DATA_BUCKET, key, transform_payment_type
+    #     )
+    #     logging.info(f"Transforming - payment_type")
+    #     to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
+    #     table = None
+    #     transformed_tables[dim] = True
+    #     logging.info(f"Transform({timestamp}) completed - payment_type")
+    # else:
+    #     logging.info(f"not in tables - payment")
+    logging.info(f"so far: {transformed_tables}")
+    # if "transaction" in tables:
+    #     key = make_key("transaction", timestamp)
+    #     dim = "dim_transaction"
+    #     table = transform_table(
+    #         "transaction", s3, RAW_DATA_BUCKET, key, transform_transaction
+    #     )
 
-        to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
-        table = None
-        transformed_tables[dim] = True
-        logging.info(f"Transform({timestamp}) completed - payment_type")
-    if "transaction" in tables:
-        key = make_key("transaction", timestamp)
-        dim = "dim_transaction"
-        table = transform_table(
-            "transaction", s3, RAW_DATA_BUCKET, key, transform_transaction
-        )
-
-        to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
-        table = None
-        transformed_tables[dim] = True
-        logging.info(f"Transform({timestamp}) completed - transaction ")
+    #     to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
+    #     table = None
+    #     transformed_tables[dim] = True
+    #     logging.info(f"Transform({timestamp}) completed - transaction ")
+    # else:
+    #     logging.info(f"not in tables - transaction")
+    # logging.info(f"so far: {transformed_tables}")
+    # gc.collect()
     if "counterparty" in tables:
         if "address" in tables:
             key_counterparty = make_key("counterparty", timestamp)
             key_address = make_key("address", timestamp)
-            transformed_tables["dim_counterparty"] = transform_and_combine(
+            table = transform_and_combine(
                 "counterparty",
                 s3,
                 RAW_DATA_BUCKET,
@@ -198,12 +211,18 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
                 "address",
                 transform_counterparty,
             )
+            to_parquet(table, PROCESSED_BUCKET, 'dim_counterparty', timestamp)
+
             transformed_tables[dim] = True
             logging.info(f"Transform({timestamp}) completed - counterparty")
         else:
             raise ValueError(
                 "address table missing unable to transform counterparty table"
             )
+    else:
+        logging.info(f"not in tables - counterparty")
+    logging.info(f"so far: {transformed_tables}")
+    gc.collect()
     if "staff" in tables:
         if "department" in tables:
             staff_key = make_key("staff", timestamp)
@@ -221,41 +240,55 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
 
             to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
             table = None
+            transformed_tables[dim] = True
             logging.info(f"Transform({timestamp}) completed - department")
         else:
             raise ValueError("department table missing unable to transform staff table")
+    else:
+        logging.info(f"not in tables - staff")
+    logging.info(f"so far: {transformed_tables}")
 
-    # if "currency" in tables:
+    gc.collect()
+    # dataframe for fact table
+    if "sales_order" in tables:
+        logging.info(f"Begining sales")
+        sales_key = make_key("sales_order", timestamp)
+        fact = "fact_sales_order"
+        table = transform_table(
+            "sales", s3, RAW_DATA_BUCKET, sales_key, sales_facts
+        )
+        logging.info(f"Begining sales")
+        to_parquet(table, PROCESSED_BUCKET, fact, timestamp)
+        transformed_tables[fact] = True
+        table = None
+        logging.info(f"Transform({timestamp}) completed - sales")
+    else:
+        logging.info(f"not in tables - sales_order")
+    gc.collect()
+
+    # Currency
     key = make_key("currency", timestamp)
     dim = "dim_currency"
     table = load_currency_codes_from_s3(
         ["currency_code", "currency_name"]
     )
     to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
+    transformed_tables[dim] = True
     table = None
     logging.info(f"Transform({timestamp})  - currency created")
-
-    # if "date" in tables:
+    gc.collect()
+    
+    # Dates
     dim = "dim_dates"
     table = create_dim_date(INITIAL_DATE, FUTURE_DATE)
     logging.info(f"Transform({timestamp})  - date created")
     transformed_tables[dim] = True 
     to_parquet(table, PROCESSED_BUCKET, dim, timestamp)
     table = None
-    # dataframe for fact table
-    if "sales" in tables:
-        sales_key = make_key("sales", timestamp)
-        fact = "fact_sales_order"
-        table = transform_table(
-            "sales", s3, RAW_DATA_BUCKET, sales_key, "sales", sales_facts
-        )
-        to_parquet(table, PROCESSED_BUCKET, fact, timestamp)
-        transformed_tables[fact] = True
-        table = None
-        logging.info(f"Transform({timestamp}) completed - sales")
 
+    logging.info(f"transformed tables {transformed_tables}")
     return transformed_tables
-
+    
 
 if __name__ == "__main__":
     event = {

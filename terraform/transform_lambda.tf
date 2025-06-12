@@ -22,8 +22,8 @@ data "archive_file" "zip_transform_handler" {
 # Zips the transform handler file for Lambda deployment.
 data "archive_file" "pandas_layer" {
   type        = "zip"
-  source_dir  = "${path.root}/transform_package/"
-  output_path = "${path.root}/zips/pandas-package.zip"
+  source_dir  = "${path.root}/transform_package/python/"
+  output_path = "${path.root}/zips/python.zip"
 }
 
 # Uploads the ZIP file to the designated S3 bucket.
@@ -37,7 +37,7 @@ resource "aws_s3_object" "transform_lambda_code" {
 # Uploads the ZIP file to the designated S3 bucket.
 resource "aws_s3_object" "transform_layer" {
   bucket = aws_s3_bucket.zip_bucket.bucket
-  key    = "pandas-package.zip"
+  key    = "python.zip"
   source = data.archive_file.pandas_layer.output_path
   etag = filemd5(data.archive_file.pandas_layer.output_path)
 }
@@ -57,10 +57,10 @@ resource "aws_lambda_layer_version" "transform_layer_version" {
 resource "aws_lambda_function" "transform_handler" {
   function_name = var.transform_lambda_name
   description   = "transforms data"
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.transform_role.arn
   handler       = "src.transform.initial_transform_handler.lambda_handler"
   runtime       = "python3.13"
-  timeout       = 250
+  timeout       = 600
 
   depends_on = [
     data.archive_file.zip_transform_handler,
@@ -70,6 +70,6 @@ resource "aws_lambda_function" "transform_handler" {
   s3_bucket        = aws_s3_object.transform_lambda_code.bucket
   s3_key           = aws_s3_object.transform_lambda_code.key
   source_code_hash = aws_s3_object.transform_lambda_code.etag
-
+  # layers = [aws_lambda_layer_version.transform_layer_version.arn]
   layers = ["arn:aws:lambda:eu-west-2:336392948345:layer:AWSSDKPandas-Python313:2"]
-}         #[aws_lambda_layer_version.transform_layer_version.arn]
+}         
