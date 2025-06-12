@@ -8,7 +8,7 @@ The aim was to design and build a reliable data platform that extracts data from
 As a final step, we visualised the data to demonstrate its value for business insights. This project showcases our ability to collaboratively deliver a full-stack data engineering solution using best practices in automation, testing, and data architecture.
 
 ## Features
-- Modular codebase separating into three phrases: Extract - Transform - Load
+- Modular codebase separating into three phases: Extract - Transform - Load
 - Cloud infrastructure created with Terraform using AWS service.
 - AWS Lambda functions are used to automate each stage (transitional data saved into separate S3 buckets).
 - Dependencies added as layers.
@@ -168,5 +168,15 @@ snacks.txt
 ```
 
 ## Reflections
-We very much enjoyed the overall process of making this repo and how we supported and learned from each other. 
+We very much enjoyed the overall process of making this repo and how we supported and learned from each other.  
+
+We all benefited from the pair-programming process, but it was a challenge to assign tickets evenly, given the odd number of people in the group. 
+
+In the first week, we set up the very ambitious target of an automated process of updating the warehouse with all three star schemas.
+We realised that this would not have been achievable within the timeframe of the project, so we decided to focus on delivering the MVP. 
+Another crucial insight from our project is that planning and communication are key (e.g., discussing interfaces to functions/more detailed planning of the three stages before starting to work separately on the different parts of the repo). 
+
+
+
+
 
