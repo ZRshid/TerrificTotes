@@ -4,11 +4,21 @@
 - 
 
 ## Overview
-Previously written
+This group project was carried out during the final phase of the 13-week Northcoders Data Engineering Bootcamp.  
+
+The aim was to design and build a reliable data platform that extracts data from a PostgreSQL operational database (Totesys), transforms it into a denormalised form star schema, and loads it into a data warehouse to support analysis and reporting. The system is designed to run on a schedule, monitor and log all activity, and maintain a full history of changes to fact data. 
+
+As a final step, we visualised the data to demonstrate its value for business insights. This project showcases our ability to collaboratively deliver a full-stack data engineering solution using best practices in automation, testing, and data architecture.
 
 ## Features
-- Fetch data from Totesy database
-
+- Modular codebase separating into three phrases: Extract - Transform - Load
+- Cloud infrastructure created with Terraform using AWS service.
+- AWS Lambda functions are used to automate each stage (transitional data saved into separate S3 buckets).
+- Dependencies added as layers.
+- TDD - unit tests and integration tests.
+- Processed data into parquet format for performance optimisation.
+- Monitoring and alerting using CloudWatch and SNS.
+- Automated CI/CD. 
 
 ## Tech Stack
 - Python
@@ -24,6 +34,8 @@ Previously written
 - Moto
 - SQLAlchemy
 - PyArrow
+- Makefile
+- Github Actions
 
 ## Setup Instructions
 
@@ -63,7 +75,6 @@ terraform apply
 ```bash
 make run-checks
 ```
-
 > Ensure your credentials are saved in secrets manager on AWS for access to the databases.
 
 ## Project Structure
