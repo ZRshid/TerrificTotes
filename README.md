@@ -1,7 +1,4 @@
-# TerrificTotes
-
-## Highlights
-- 
+# TerrificTotes - final project (ETL pipeline) 
 
 ## Overview
 This group project was carried out during the final phase of the 13-week Northcoders Data Engineering Bootcamp.  
@@ -169,4 +166,5 @@ snacks.txt
 ```
 
 ## Reflections
-- 
+We very much enjoyed the overall process of making this repo and how we supported and learned from each other. 
+
