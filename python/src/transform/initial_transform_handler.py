@@ -257,7 +257,7 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
         table = transform_table(
             "sales", s3, RAW_DATA_BUCKET, sales_key, sales_facts
         )
-        logging.info(f"Begining sales")
+        logging.info(f"transformed sale, saving:")
         to_parquet(table, PROCESSED_BUCKET, fact, timestamp)
         transformed_tables[fact] = True
         table = None

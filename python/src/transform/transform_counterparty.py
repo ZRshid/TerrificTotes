@@ -36,11 +36,11 @@ def transform_counterparty(
 
     if not required_counterparty_columns.issubset(counterparty.columns):
         missing = required_counterparty_columns - set(counterparty.columns)
-        raise ValueError(f"required columns missing in counterparty: {missing}")
+        raise ValueError(f"required columns missing in counterparty: {missing} from {counterparty.columns}")
     
     if not required_address_columns.issubset(address.columns):
         missing = required_address_columns - set(address.columns)
-        raise ValueError(f"required columns missing in address: {missing}")
+        raise ValueError(f"required columns missing in address: {missing} from {address.columns}")
     
     try:
         df_drop_address = address.drop(

@@ -45,25 +45,33 @@ def sales_facts(df_sales_order: pd.DataFrame):
         df_sales_facts = pd.DataFrame(columns=expected_columns)
         
         # Convert timestamp into date/time format
+        
         df_sales_facts["created_date"] = pd.to_datetime(df_sales_order["created_at"], utc=True).dt.date
+        df_sales_facts["created_time"] = pd.to_datetime(df_sales_order["created_at"], utc=True).dt.time 
+        df_sales_order.drop(columns="created_at")
         df_sales_facts["last_updated_date"] = pd.to_datetime(df_sales_order["last_updated"], utc=True).dt.date
         df_sales_facts["last_updated_time"] = pd.to_datetime(df_sales_order["last_updated"], utc=True).dt.time 
-        df_sales_facts["created_time"] = pd.to_datetime(df_sales_order["created_at"], utc=True).dt.time 
-
+        df_sales_order.drop(columns="last_updated")
         # Convert string into date format
         df_sales_facts["agreed_payment_date"] = pd.to_datetime(df_sales_order["agreed_payment_date"], utc=True).dt.date
         df_sales_facts["agreed_delivery_date"] = pd.to_datetime(df_sales_order["agreed_delivery_date"], utc=True).dt.date
-
+        df_sales_order.drop(columns="agreed_delivery_date")
         df_sales_facts["units_sold"] = df_sales_order["units_sold"]
+        df_sales_order.drop(columns="units_sold")
         df_sales_facts["unit_price"] = df_sales_order["unit_price"]
-
+        df_sales_order.drop(columns="unit_price")
         df_sales_facts["sales_order_id"] = df_sales_order["sales_order_id"]
+        df_sales_order.drop(columns="sales_order_id")
         df_sales_facts["sales_staff_id"] = df_sales_order["staff_id"]
+        df_sales_order.drop(columns="staff_id")
         df_sales_facts["counterparty_id"] = df_sales_order["counterparty_id"]
+        df_sales_order.drop(columns="counterparty_id")
         df_sales_facts["currency_id"] = df_sales_order["currency_id"]
+        df_sales_order.drop(columns="currency_id")
         df_sales_facts["design_id"] = df_sales_order["design_id"]
+        df_sales_order.drop(columns="design_id")
         df_sales_facts["agreed_delivery_location_id"] = df_sales_order["agreed_delivery_location_id"]
-
+        df_sales_order.drop(columns="agreed_delivery_location_id")
         # Reset index and rename the index column to sales_record_id
         df_sales_facts.reset_index(inplace=True)
         df_sales_facts.rename(columns={"index": "sales_record_id"}, inplace=True)
