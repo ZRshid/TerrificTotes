@@ -223,7 +223,7 @@ class TestSales_facts:
 
     def test_dataframe_has_the_correct_number_of_columns(self, dummy_sales_order):
         df_sales_facts = sales_facts(dummy_sales_order)
-
+        print(df_sales_facts.columns)
         assert df_sales_facts.shape[1] == 15
 
     def test_function_returns_an_error_when_table_is_not_generated(self, dummy_sales_order):

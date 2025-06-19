@@ -115,6 +115,7 @@ def transform_table(
     """
     try:
         df = load_json(raw_bucket, key_address, table_name, s3)
+
         transformed_df = transform(df)
         return transformed_df
     except Exception as e:
@@ -140,7 +141,7 @@ def transform_tables(tables: list, s3, timestamp: str) -> dict:
     # replace with switch-case, default log ?
     transformed_tables = {}
 
-    # Create dataframes for dimensions
+    # Create dataframes for dimensions - messy code - return to orriginal
     if "address" in tables:
         key = make_key("address", timestamp)
         dim = "dim_location"

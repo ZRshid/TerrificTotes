@@ -25,10 +25,22 @@ def load_json(bucket: str, key: str, table: str, s3) -> pd.DataFrame:
 
     try:
         object = s3.get_object(Bucket=bucket, Key=key)
+        logging.info(f"loading {key}")
         content = object.get("Body").read().decode("utf-8")
+        logging.info(f"converting to data {key}")
         data = json.loads(content)
+        content=None
+        # logging.info(f"converting to DataFrame {key}")
+        # df = pd.DataFrame(data[table])
+
+        # df = wr.s3.read_json(f"s3://{bucket}/{key}")
+        # df = df.drop(['from_time', 'to_time'],errors='ignore')
+        # df = pd.json_normalize(df)
+        logging.info(f"loading {key}")
+        logging.info(f"converting to data {key}")
         
         df = pd.DataFrame(data[table])
+        
         return df
     except Exception as e:
         logging.error(

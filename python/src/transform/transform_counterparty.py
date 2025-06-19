@@ -36,6 +36,7 @@ def transform_counterparty(
 
     if not required_counterparty_columns.issubset(counterparty.columns):
         missing = required_counterparty_columns - set(counterparty.columns)
+        #what about empty dictionary (nothing to download)
         raise ValueError(f"required columns missing in counterparty: {missing} from {counterparty.columns}")
     
     if not required_address_columns.issubset(address.columns):
